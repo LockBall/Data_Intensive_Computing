@@ -3,7 +3,7 @@
 # 11 Feb 2023
 
 # chmod a+x <filename> to set execute permissions
-echo -e " initiating ssh connection";
+echo -e " connected to target";
 
 echo -e "\n updating & upgrading" ;
 sudo apt update ;
@@ -47,5 +47,5 @@ readlink -f $(which java) ;
 
 
 
-
+# run me using this command
 # ssh -t LutzD00D@pc07.cloudlab.umass.edu < single_node_ubuntu.sh
