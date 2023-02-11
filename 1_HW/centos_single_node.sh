@@ -5,16 +5,15 @@
 # chmod a+x <filename> to set execute permissions
 echo -e " connected to target";
 
-echo -e "\n updating & upgrading" ;
-sudo apt update ;
-sudo apt upgrade ;
+echo -e "\n making yum cache" ;
+sudo yum makecache
 
 echo -e "\n installing ssh & pdsh \n" ;
-sudo apt-get install ssh ;
-sudo apt-get install pdsh ;
+sudo yum -y install openssh-server openssh-clients
+sudo yum -y install pdsh
 
 echo -e "\n installing java" ;
-sudo apt install default-jdk ;
+sudo yum -y install java-devel
 java -version ;
 
 echo -e "\n installing hadoop" ;
@@ -48,4 +47,4 @@ readlink -f $(which java) ;
 
 
 # run me using this command
-# ssh -t LutzD00D@pc07.cloudlab.umass.edu < single_node_ubuntu.sh
+# ssh -t LutzD00D@pc88.cloudlab.umass.edu < centos_single_node.sh
