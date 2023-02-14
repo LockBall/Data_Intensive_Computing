@@ -1,8 +1,13 @@
 #!/bin/bash
-# John Lutz
-# 11 Feb 2023
 
-# chmod a+x <filename> to set execute permissions
+# John Lutz - 13 Feb 2023
+# chmod a+x <filename> to set execute permissions for this file
+# run me using this command, where pc?? is the ID of the ubuntu node
+# ssh -t LutzD00D@pc07.cloudlab.umass.edu < ubuntu_single_node.sh
+# ssh LutzD00D@apt099.apt.emulab.net < ubuntu_single_node.sh
+
+# https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
+
 echo -e " connected to target";
 
 echo -e "\n updating & upgrading" ;
@@ -18,7 +23,6 @@ sudo apt install default-jdk ;
 java -version ;
 
 echo -e "\n installing hadoop" ;
-# https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
 
 if test -d "/usr/local/hadoop"; then
     echo "hadoop has already been extracted and moved"
@@ -35,21 +39,15 @@ else
         sudo mv hadoop-3.3.4 /usr/local/hadoop ;
 fi
 
-which java ;
-readlink -f $(which java) ;
+#which java ;
+#readlink -f $(which java) ;
 
-#sudo nano /usr/local/hadoop/etc/hadoop/hadoop-env.sh ;
-#replace the line
-# export JAVA_HOME=
-#with the line
-#export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 search_for='# export JAVA_HOME=' ;
 replace_with='export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")'
 #replace_with='export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/'
-
 sed -i "s@$search_for@$replace_with@" /usr/local/hadoop/etc/hadoop/hadoop-env.sh ;
 
-/usr/local/hadoop/bin/hadoop
+#/usr/local/hadoop/bin/hadoop
 
 cd '$HOME'
 mkdir ~/input
@@ -57,5 +55,6 @@ cp /usr/local/hadoop/etc/hadoop/*.xml ~/input
 /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*'
 cat ~/grep_example/*
 
-# run me using this command
-# ssh -t LutzD00D@pc07.cloudlab.umass.edu < ubuntu_single_node.sh
+# should return
+# 22    allowed.
+# 1    allowed
