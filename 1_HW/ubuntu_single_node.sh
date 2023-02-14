@@ -11,58 +11,76 @@
 echo -e " connected to target";
 
 echo -e "\n updating & upgrading" ;
-sudo apt-get update && sudo apt-get -y upgrade;
-#sudo apt update ;
-#sudo apt upgrade ;
+sudo apt-get update -y;
+sudo apt-get upgrade -y;
 
-echo -e "\n installing ssh & pdsh \n" ;
-sudo apt-get install -y ssh ;
-sudo apt-get install -y pdsh ;
+echo -e "\n installing ssh & pdsh \n";
+sudo apt-get install -y ssh;
+sudo apt-get install -y pdsh;
 
-echo -e "\n installing java" ;
-sudo apt install -y default-jdk ;
-java -version ;
+echo -e "\n installing java";
+sudo apt install -y default-jdk;
+java -version;
 
-echo -e "\n installing hadoop" ;
+echo -e "\n installing hadoop";
 
-if test -d "/usr/local/hadoop"; then
-    echo "hadoop has already been extracted and moved"
+if test -d "/usr/local/hadoop";
+    then echo "hadoop has already been extracted and moved"
 else
     echo " /usr/local/hadoop folder missing"
-    if test -f "hadoop-3.3.4.tar.gz" ; then
-        echo " file exists" ;
+    if test -f "hadoop-3.3.4.tar.gz";
+        then echo " file exists";
     else
-        echo " file not found, downloading hadoop" ;
-        wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz ;
+        echo " file not found, downloading hadoop";
+        wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz;
     fi
-        echo " extracting & moving hadoop" ;
-        tar xvfz hadoop-3.3.4.tar.gz ;
-        sudo mv hadoop-3.3.4 /usr/local/hadoop ;
+    
+    echo " extracting & moving hadoop";
+    tar xvfz hadoop-3.3.4.tar.gz;
+    sudo mv hadoop-3.3.4 /usr/local/hadoop;
 fi
 
 #which java ;
 #readlink -f $(which java) ;
 
-search_for='# export JAVA_HOME=' ;
+search_for='# export JAVA_HOME=';
 replace_with='export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")'
 #replace_with='export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/'
-sed -i "s@$search_for@$replace_with@" /usr/local/hadoop/etc/hadoop/hadoop-env.sh ;
+sed -i "s@$search_for@$replace_with@" /usr/local/hadoop/etc/hadoop/hadoop-env.sh;
 
+if grep hadoop ~/.bashrc
+    then
+    echo -e "hadoop paths already in bashrc \n";
+else
+    echo "adding hadoop paths to bashrc \n";
+    echo -e '\n
+export HADOOP_HOME=/home/ubuntu/hadoop;
+export PATH=$PATH:$HADOOP_HOME/bin;
+export PATH=$PATH:$HADOOP_HOME/sbin;
+export PATH=$PATH:$HADOOP_HOME/sbin;
+export HADOOP_MAPRED_HOME=${HADOOP_HOME};
+export HADOOP_COMMON_HOME=${HADOOP_HOME};
+export HADOOP_HDFS_HOME=${HADOOP_HOME};
+export YARN_HOME=${HADOOP_HOME};
+' >> ~/.bashrc;
+fi
 #/usr/local/hadoop/bin/hadoop
 
+
 cd $HOME
-rm -r -f ~/input
-mkdir ~/input
-cp /usr/local/hadoop/etc/hadoop/*.xml ~/input
-/usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*'
-echo -e "\n" ;
+rm -r -f ~/input;
+mkdir ~/input;
+cp /usr/local/hadoop/etc/hadoop/*.xml ~/input;
+/usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*';
+echo -e "\n";
 cat ~/grep_example/*;
 
 # should return
 # 22    allowed.
 # 1    allowed
 
-ip=$(hostname -i);
-echo -e "$ip\n" > ip_list.txt;
-echo -e "\n $ip";
+#ip=$(hostname -i);
+#echo -e "$ip\n" > ip_list.txt;
+#echo -e "\n $ip";
+
 
