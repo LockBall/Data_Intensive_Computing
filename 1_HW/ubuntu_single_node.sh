@@ -56,8 +56,13 @@ mkdir ~/input
 cp /usr/local/hadoop/etc/hadoop/*.xml ~/input
 /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*'
 echo -e "\n" ;
-cat ~/grep_example/*
+cat ~/grep_example/*;
 
 # should return
 # 22    allowed.
 # 1    allowed
+
+ip=$(hostname -i);
+echo -e "$ip\n" > ip_list.txt;
+echo -e "\n $ip";
+
