@@ -55,6 +55,7 @@ rm -r -f ~/input
 mkdir ~/input
 cp /usr/local/hadoop/etc/hadoop/*.xml ~/input
 /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*'
+echo -e "\n the results on node" ;
 cat ~/grep_example/*
 
 # should return
