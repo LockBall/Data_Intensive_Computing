@@ -11,15 +11,16 @@
 echo -e " connected to target";
 
 echo -e "\n updating & upgrading" ;
-sudo apt update ;
-sudo apt upgrade ;
+sudo apt-get update && sudo apt-get -y upgrade;
+#sudo apt update ;
+#sudo apt upgrade ;
 
 echo -e "\n installing ssh & pdsh \n" ;
-sudo apt-get install ssh ;
-sudo apt-get install pdsh ;
+sudo apt-get install -y ssh ;
+sudo apt-get install -y pdsh ;
 
 echo -e "\n installing java" ;
-sudo apt install default-jdk ;
+sudo apt install -y default-jdk ;
 java -version ;
 
 echo -e "\n installing hadoop" ;
