@@ -50,7 +50,8 @@ sed -i "s@$search_for@$replace_with@" /usr/local/hadoop/etc/hadoop/hadoop-env.sh
 
 #/usr/local/hadoop/bin/hadoop
 
-cd '$HOME'
+cd $HOME
+rm -r -f ~/input
 mkdir ~/input
 cp /usr/local/hadoop/etc/hadoop/*.xml ~/input
 /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*'
