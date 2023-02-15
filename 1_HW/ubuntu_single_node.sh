@@ -12,7 +12,7 @@
 # https://sparkbyexamples.com/hadoop/apache-hadoop-installation/
 
 DataNodes_id_ary=("2" "3" "4"); # workers
-reset_workers=0 # set to 1 to delete and regenerate workers file
+reset_workers=1 # set to 1 to delete and regenerate workers file
 clean_hadoop=1
 
 echo -e "____________________ connected to target ____________________";
@@ -57,6 +57,8 @@ if [ $clean_hadoop -eq 1 ]
 then
     echo "Cleanning"
     sudo rm -rd /usr/local/hadoop;
+    rm ~/.bashrc
+    mv ~/.cleanbashrc .bashrc
 fi
 
 echo -e "\n ____________________ handling hadoop ____________________ ";
@@ -89,6 +91,7 @@ then
     echo -e " ******** hadoop paths already in ~/.bashrc ******** \n";
 else
     echo " ******** adding hadoop paths to ~/.bashrc ******** \n"; # same same ↓↓
+    cp ~/.bashrc ~/.cleanbashrc
     echo -e '\n
 export HADOOP_HOME=/usr/local/hadoop;
 export PATH=$PATH:$HADOOP_HOME/bin;
@@ -98,6 +101,7 @@ export HADOOP_MAPRED_HOME=${HADOOP_HOME};
 export HADOOP_COMMON_HOME=${HADOOP_HOME};
 export HADOOP_HDFS_HOME=${HADOOP_HOME};
 export YARN_HOME=${HADOOP_HOME};
+export PDSH_RCMD_TYPE=ssh;
 ' >> ~/.bashrc;
 fi
 source ~/.bashrc;
@@ -185,7 +189,7 @@ else
     replace_with=" <!-- added by NameNode script --> \n \
     <property> \n \
         <name>mapreduce.jobtracker.address</name> \n \
-        <value>$ip_3$NN0 :54311</value> \n \
+        <value>$ip_3$NN0:54311</value> \n \
     </property> \n \
     <property> \n \
         <name>mapreduce.framework.name</name> \n \
