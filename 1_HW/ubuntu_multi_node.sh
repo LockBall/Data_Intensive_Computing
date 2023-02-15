@@ -14,7 +14,7 @@ user_str="LutzD00D"; # update me with your username
 server_str="@apt"; # update me with your server
 
 # update me with node ids. this is also the last digits of the ip address
-node_id_ary=("127" "123" "121" "126"); 
+node_id_ary=("150" "147" "139" "138"); 
 
 suffix_str=".apt.emulab.net";
 script_str=" < ubuntu_single_node.sh";
@@ -33,3 +33,6 @@ do
     chmod +x $node_id.sh;
     git-bash -e $node_id.sh & # & to run in background
 done
+
+# only on NameNode
+#hdfs namenode -format

@@ -11,33 +11,33 @@
 # https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-alone-mode-on-ubuntu-20-04
 # https://sparkbyexamples.com/hadoop/apache-hadoop-installation/
 
-DataNodes_id_ary=("123" "121" "126"); # workers
-reset_workers=0; # set to 1 to delete and regenerate workers file
+DataNodes_id_ary=("147" "139" "138"); # workers
+reset_workers=0 # set to 1 to delete and regenerate workers file
 
 echo -e "____________________ connected to target ____________________";
 
 # ____________________ add nodes to hosts ____________________
 # these ip must be manually edited and be the same as in ubuntu_multi_nodes.sh
 echo -e "____________________ processing hosts file ____________________" ;
-ip_3="128.110.96.";
-NN0="127"; #NameNode
-DN1="123"; #DataNode
-DN2="121";
-DN3="126";
+ip_3="10.10.1.";
+NN0="1"; #NameNode
+DN1="2"; #DataNode
+DN2="3";
+DN3="4";
 
-if grep -q NameNode0 /etc/hosts;
-then
-    echo -e " ******** node IP's already in /etc/hosts ******** \n";
-else
-    echo -e " ******** adding node IP's to /etc/hosts ******** ";
-    sudo -- sh -c -e "echo '
-$ip_3$NN0    NameNode0
-$ip_3$DN1    DataNode1
-$ip_3$DN2    DataNode2
-$ip_3$DN3    DataNode3
-' >> /etc/hosts
-";
-fi
+#if grep -q NameNode0 /etc/hosts;
+#then
+#    echo -e " ******** node IP's already in /etc/hosts ******** \n";
+#else
+#    echo -e " ******** adding node IP's to /etc/hosts ******** ";
+#    sudo -- sh -c -e "echo '
+#$ip_3$NN0    NameNode0
+#$ip_3$DN1    DataNode1
+#$ip_3$DN2    DataNode2
+#$ip_3$DN3    DataNode3
+#' >> /etc/hosts
+#";
+#fi
 # ____________________ add nodes to hosts ____________________
 
 echo -e " ******** updating & upgrading ******** ";
@@ -108,11 +108,11 @@ else
     replace_with=" <!-- added by NameNode script --> \n \
     <property> \n \
         <name>fs.defaultFS</name> \n \
-        <value>hdfs://$ip_3$NN0:9000</value> \n \
+        <value>hdfs://$ip_3$NN0 :9000</value> \n \
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
-fi
+fi #NameNode
 # ____________________ modify core-site.xml ____________________
 
 # ____________________ modify hdfs-site.xml ____________________
@@ -162,10 +162,13 @@ else
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/yarn-site.xml;
-fi
+fi #NameNode
 # ____________________ modify yarn-site.xml ____________________
 
 # ____________________ modify mapred-site.xml ____________________
+# [Note: This configuration required only on name node however, 
+# it will not harm if you configure it on datanodes]
+
 if grep -q mapred /usr/local/hadoop/etc/hadoop/mapred-site.xml;
 then
     echo -e " ******** mapred-site.xml already modified ******** ";
@@ -175,7 +178,7 @@ else
     replace_with=" <!-- added by NameNode script --> \n \
     <property> \n \
         <name>mapreduce.jobtracker.address</name> \n \
-        <value>$ip_3$NN0:54311</value> \n \
+        <value>$ip_3$NN0 :54311</value> \n \
     </property> \n \
     <property> \n \
         <name>mapreduce.framework.name</name> \n \
@@ -183,7 +186,7 @@ else
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/mapred-site.xml;
-fi
+fi #NameNode
 # ____________________ modify mapred-site.xml ____________________
 
 # ____________________ create data folder ____________________
@@ -193,9 +196,9 @@ then
     echo " ******** data folder already exists ******** ";
 else
     echo " ******** making data dir ******** ";
-    sudo mkdir -p /usr/local/hadoop/hdfs/data;
-    # below lines possibly unecessary ??
+    mkdir -p /usr/local/hadoop/hdfs/data;
     #sudo chown ubuntu:ubuntu -R /usr/local/hadoop/hdfs/data;
+    #sudo chown -R $(id -u):$(id -g) /usr/local/hadoop/hdfs/data;
     #chmod 700 /usr/local/hadoop/hdfs/data;
 fi
 # ____________________ create data folder ____________________
@@ -210,14 +213,14 @@ else
     echo " ******** masters file not found, creating it ******** ";
     touch /usr/local/hadoop/etc/hadoop/masters;
     echo "$ip_3$NN0" >> /usr/local/hadoop/etc/hadoop/masters;
-fi
+fi #NameNode
 # ____________________ create masters file ____________________
 
 # ____________________ create workers file ____________________
 # DataNodes
 echo -e "\n ____________________ process workers file ____________________ ";
 
-if reset_workers == 1;
+if [ $reset_workers -eq 1 ];
 then
     echo " ******** workers reset enabled ******** ";
     rm /usr/local/hadoop/etc/hadoop/workers;
@@ -257,3 +260,5 @@ cat ~/grep_example/*;
 #ip=$(hostname -i);
 #echo -e "$ip\n" > ip_list.txt;
 #echo -e "\n $ip";
+
+$SHELL
