@@ -37,7 +37,7 @@ else
     
     echo " extracting & moving hadoop";
     tar xvfz hadoop-3.3.4.tar.gz;
-    sudo mv hadoop-3.3.4 /usr/local/hadoop;
+    sudo mv hadoop-3.3.4 /usr/local/hadoop; # same same
 fi
 
 #which java ;
@@ -49,12 +49,11 @@ replace_with='export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
 sed -i "s@$search_for@$replace_with@" /usr/local/hadoop/etc/hadoop/hadoop-env.sh;
 
 if grep hadoop ~/.bashrc
-    then
-    echo -e "hadoop paths already in bashrc \n";
+    then echo -e "hadoop paths already in bashrc \n";
 else
-    echo "adding hadoop paths to bashrc \n";
+    echo "adding hadoop paths to bashrc \n"; # same same ↓↓
     echo -e '\n
-export HADOOP_HOME=/home/ubuntu/hadoop;
+export HADOOP_HOME=/usr/local/hadoop;
 export PATH=$PATH:$HADOOP_HOME/bin;
 export PATH=$PATH:$HADOOP_HOME/sbin;
 export PATH=$PATH:$HADOOP_HOME/sbin;
@@ -64,8 +63,9 @@ export HADOOP_HDFS_HOME=${HADOOP_HOME};
 export YARN_HOME=${HADOOP_HOME};
 ' >> ~/.bashrc;
 fi
-#/usr/local/hadoop/bin/hadoop
 
+source ~/.bashrc;
+#/usr/local/hadoop/bin/hadoop
 
 cd $HOME
 rm -r -f ~/input;
