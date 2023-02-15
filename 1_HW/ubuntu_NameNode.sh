@@ -8,7 +8,6 @@ DN1="123";
 DN2="121";
 DN3="126";
 
-
 if grep -q NameNode0 /etc/hosts
     then echo -e "node IP's already in /etc/hosts \n";
 else
@@ -29,7 +28,7 @@ else
     replace_with=" <!-- added by NameNode script --> \n \
     <property> \n \
         <name>fs.defaultFS</name> \n \
-        <value>hdfs://128.110.96.$NN0:9000</value> \n \
+        <value>hdfs://$ip_3$NN0:9000</value> \n \
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
@@ -56,4 +55,27 @@ else
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/hdfs-site.xml;
+fi
+
+
+if grep -q hadoop /usr/local/hadoop/etc/hadoop/yarn-site.xml
+    then echo -e "yarn-site.xml already modified \n"
+else
+    echo -e "setting yarn-site.xml"
+    search_for='<configuration>';
+    replace_with=" <!-- added by NameNode script --> \n \
+    <property> \n \
+        <name>yarn.nodemanager.aux-services</name> \n \
+        <value>mapreduce_shuffle</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name> \n \
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value> \n \
+    </property> \n \
+    <property> \n \
+       <name>yarn.resourcemanager.hostname</name> \n \
+       <value>$ip_3$NN0</value> \n \
+    </property>
+    ";
+    sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/yarn-site.xml;
 fi
