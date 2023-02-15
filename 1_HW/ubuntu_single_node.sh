@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# John Lutz - 13 Feb 2023
+# John Lutz - 15 Feb 2023
 # chmod a+x <filename> to set execute permissions for this file
-# run me using this command, where pc?? is the ID of the ubuntu node
-# ssh -t LutzD00D@pc07.cloudlab.umass.edu < ubuntu_single_node.sh
-# ssh LutzD00D@apt099.apt.emulab.net < ubuntu_single_node.sh
+# run me using this command, where ???? is the ID of the ubuntu node e.g., apt099, pc127
+# ssh -t LutzD00D@??????.cloudlab.umass.edu < ubuntu_single_node.sh
+# ssh -t LutzD00D@??????.apt.emulab.net < ubuntu_single_node.sh
 
 # https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
+# https://sparkbyexamples.com/hadoop/apache-hadoop-installation/
 
 echo -e "____________________ connected to target ____________________";
 
@@ -151,8 +152,28 @@ else
 fi
 # ____________________ modify yarn-site.xml ____________________
 
-echo -e "____________________ Running Example ____________________ \n";
+# ____________________ modify mapred-site.xml ____________________
+if grep -q hadoop /usr/local/hadoop/etc/hadoop/mapred-site.xml
+    then echo -e " ******** mapred-site.xml already modified ******** \n"
+else
+    echo -e " ******** setting mapred-site.xml ******** "
+    search_for='<configuration>';
+    replace_with=" <!-- added by NameNode script --> \n \
+    <property> \n \
+        <name>mapreduce.jobtracker.address</name> \n \
+        <value>$ip_3$NN0:54311</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>mapreduce.framework.name</name> \n \
+        <value>mapred</value> \n \
+    </property>
+    ";
+    sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/mapred-site.xml;
+fi
+# ____________________ modify mapred-site.xml ____________________
 
+
+echo -e "____________________ Running Example ____________________ \n";
 cd $HOME
 rm -r -f ~/input;
 mkdir ~/input;
