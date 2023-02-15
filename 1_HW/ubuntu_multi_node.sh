@@ -1,5 +1,5 @@
 #!/bin/bash
-# John Lutz - 13 Feb 2023
+# John Lutz - 15 Feb 2023
 # chmod a+x <filename> to set execute permissions for this file
 # run this script using:
 # $ sh ubuntu_multi_node.sh
@@ -10,18 +10,19 @@
 #$ ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
 
 cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
-user_str="LutzD00D";
+user_str="LutzD00D"; # update me with your username
 server_str="@apt"; # update me with your server
 
 # update me with node ids. this is also the last digits of the ip address
 node_id_ary=("127" "123" "121" "126"); 
-#************************************************************************
+
 suffix_str=".apt.emulab.net";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
-for node_id in ${node_id_ary[@]}; do
-    echo "processing commands for node $node_id";
+for node_id in ${node_id_ary[@]};
+do
+    echo " ******** processing commands for node $node_id ******** ";
     echo "# $current_date" > $node_id.sh;
     final_cmd_str="$cmd_str$user_str$server_str$node_id$suffix_str$script_str";
     echo -e "generated:    $final_cmd_str \n";
