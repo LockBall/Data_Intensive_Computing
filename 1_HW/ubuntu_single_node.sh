@@ -13,7 +13,7 @@
 
 DataNodes_id_ary=("2" "3" "4"); # workers
 reset_workers=0 # set to 1 to delete and regenerate workers file
-clean_hadoop=0
+clean_hadoop=1
 
 echo -e "____________________ connected to target ____________________";
 
@@ -53,6 +53,12 @@ echo -e "\n ******** installing java ******** ";
 sudo apt install -y default-jdk;
 java -version;
 
+if [ $clean_hadoop -eq 1 ]
+then
+    echo "Cleanning"
+    sudo rm -rd /usr/local/hadoop;
+fi
+
 echo -e "\n ____________________ handling hadoop ____________________ ";
 if test -d "/usr/local/hadoop";
 then
@@ -69,12 +75,7 @@ else
     
     echo " ******** extracting & moving hadoop ******** ";
     tar xvfz hadoop-3.3.4.tar.gz;
-    sudo cp hadoop-3.3.4 /usr/local/hadoop; # same same
-fi
-
-if [ $clean_hadoop -eq 1]; then
-    sudo rm -rd /usr/local/hadoop;
-    sudo cp hadoop-3.3.4 /usr/local/hadoop; # same same
+    sudo mv hadoop-3.3.4 /usr/local/hadoop; # same same
 fi
 
 search_for='# export JAVA_HOME=';
