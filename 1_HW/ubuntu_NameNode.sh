@@ -34,3 +34,26 @@ else
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
 fi
+
+
+if grep -q hadoop /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+    then echo -e "hdfs-site.xml already modified \n"
+else
+    echo -e "setting hdfs-site.xml"
+    search_for='<configuration>';
+    replace_with=" <!-- added by NameNode script --> \n \
+    <property> \n \
+        <name>dfs.replication</name> \n \
+        <value>3</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>dfs.namenode.name.dir</name> \n \
+        <value>file:///usr/local/hadoop/hdfs/data</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>dfs.datanode.data.dir</name> \n \
+        <value>file:///usr/local/hadoop/hdfs/data</value> \n \
+    </property>
+    ";
+    sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/hdfs-site.xml;
+fi
