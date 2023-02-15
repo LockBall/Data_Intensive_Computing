@@ -20,6 +20,20 @@ suffix_str=".apt.emulab.net";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
+cmd="ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa"
+echo $cmd >> ssh_master.sh
+cmd="cat .ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
+echo $cmd >> ssh_master.sh
+echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id_ary[0].apt.emulab.net;" >> $ssh_master.sh;
+chmod +x $ssh_master.sh;
+git-bash -e $ssh_master.sh & # & to run in background
+
+echo "scp LutzD00D@apt$node_id_ary[0].apt.emulab.net:.ssh/authorized_keys ~/tmp_keys"
+echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[1].apt.emulab.net:.ssh/authorized_keys"
+echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[2].apt.emulab.net:.ssh/authorized_keys"
+echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[3].apt.emulab.net:.ssh/authorized_keys"
+
+
 for node_id in ${node_id_ary[@]};
 do
     echo " ******** processing commands for node $node_id ******** ";
