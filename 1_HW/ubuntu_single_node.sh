@@ -73,7 +73,7 @@ else
 fi
 
 if [ $clean_hadoop -eq 1]; then
-    sudo rm /usr/local/hadoop;
+    sudo rm -rd /usr/local/hadoop;
     sudo cp hadoop-3.3.4 /usr/local/hadoop; # same same
 fi
 
