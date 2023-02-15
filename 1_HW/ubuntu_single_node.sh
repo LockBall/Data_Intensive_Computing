@@ -114,7 +114,7 @@ else
     replace_with=" <!-- added by NameNode script --> \n \
     <property> \n \
         <name>fs.defaultFS</name> \n \
-        <value>hdfs://$ip_3$NN0 :9000</value> \n \
+        <value>hdfs://$ip_3$NN0:9000</value> \n \
     </property>
     ";
     sed -i "/$search_for/a $replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
