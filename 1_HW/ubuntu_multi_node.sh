@@ -28,10 +28,10 @@ echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id_ary[0].apt.em
 chmod +x $ssh_master.sh;
 git-bash -e $ssh_master.sh & # & to run in background
 
-echo "scp LutzD00D@apt$node_id_ary[0].apt.emulab.net:.ssh/authorized_keys ~/tmp_keys"
-echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[1].apt.emulab.net:.ssh/authorized_keys"
-echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[2].apt.emulab.net:.ssh/authorized_keys"
-echo "scp ~/tmp_keys LutzD00D@apt$node_id_ary[3].apt.emulab.net:.ssh/authorized_keys"
+git-bash -e "scp LutzD00D@apt$node_id_ary[0].apt.emulab.net:.ssh/authorized_keys ~/tmp_keys"
+git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[1].apt.emulab.net:.ssh/authorized_keys"
+git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[2].apt.emulab.net:.ssh/authorized_keys"
+git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[3].apt.emulab.net:.ssh/authorized_keys"
 
 
 for node_id in ${node_id_ary[@]};
