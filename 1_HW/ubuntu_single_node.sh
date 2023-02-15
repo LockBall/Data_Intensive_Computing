@@ -11,7 +11,7 @@
 # https://www.digitalocean.com/community/tutorials/how-to-install-hadoop-in-stand-alone-mode-on-ubuntu-20-04
 # https://sparkbyexamples.com/hadoop/apache-hadoop-installation/
 
-DataNodes_id_ary=("147" "139" "138"); # workers
+DataNodes_id_ary=("2" "3" "4"); # workers
 reset_workers=0 # set to 1 to delete and regenerate workers file
 
 echo -e "____________________ connected to target ____________________";

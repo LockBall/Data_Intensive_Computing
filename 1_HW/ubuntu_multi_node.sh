@@ -9,43 +9,59 @@
 
 #$ ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
 
+windows=0
+if [ $windows -eq 1 ] 
+then
+    shell_cmd="git-bash -e"
+else
+    shell_cmd="gnome-terminal --command "
+fi
+
 cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
-user_str="LutzD00D"; # update me with your username
-server_str="@apt"; # update me with your server
+user_str="aroberge"; # update me with your username
+server_str="node"; # update me with your server
 
 # update me with node ids. this is also the last digits of the ip address
-node_id_ary=("150" "147" "139" "138"); 
+node_id_ary=("0" "1" "2" "3"); 
 
-suffix_str=".apt.emulab.net";
+suffix_str=".hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
-cmd="ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa"
+if test -f "ssh_master.sh"; then
+    echo "Removing SSH Master shell"
+    rm ssh_master.sh
+fi
+echo "Executing Key Generation"
+cmd="ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa -y"
 echo $cmd >> ssh_master.sh
 cmd="cat .ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 echo $cmd >> ssh_master.sh
-echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id_ary[0].apt.emulab.net;" >> $ssh_master.sh;
-chmod +x $ssh_master.sh;
-git-bash -e $ssh_master.sh & # & to run in background
+echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str;" >> ssh_master.sh;
+echo '$SHELL' >> ssh_master.sh;
+chmod +x ssh_master.sh;
+directory=$(pwd)
+$shell_cmd "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str 'bash -s' << $directory/ssh_master.sh" & # & to run in background
 
-git-bash -e "scp LutzD00D@apt$node_id_ary[0].apt.emulab.net:.ssh/authorized_keys ~/tmp_keys"
-git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[1].apt.emulab.net:.ssh/authorized_keys"
-git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[2].apt.emulab.net:.ssh/authorized_keys"
-git-bash -e "scp ~/tmp_keys LutzD00D@apt$node_id_ary[3].apt.emulab.net:.ssh/authorized_keys"
+echo "Executing SCP Copy"
+$shell_cmd "scp $user_str@$server_str${node_id_ary[0]}$suffix_str:.ssh/authorized_keys tmp_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[1]}$suffix_str:.ssh/authorized_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[2]}$suffix_str:.ssh/authorized_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
 
 
 for node_id in ${node_id_ary[@]};
 do
     echo " ******** processing commands for node $node_id ******** ";
     echo "# $current_date" > $node_id.sh;
-    final_cmd_str="$cmd_str$user_str$server_str$node_id$suffix_str$script_str";
+    final_cmd_str="$cmd_str$user_str@$server_str$node_id$suffix_str$script_str";
     echo -e "generated:    $final_cmd_str \n";
     echo "$final_cmd_str;" >> $node_id.sh;
     echo "echo results from node $node_id;" >> $node_id.sh;
-    echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id.apt.emulab.net;" >> $node_id.sh;
+    echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$node_id$suffix_str;" >> $node_id.sh;
     echo '$SHELL' >> $node_id.sh;
     chmod +x $node_id.sh;
-    git-bash -e $node_id.sh & # & to run in background
+    $shell_cmd "$directory/$node_id.sh" & # & to run in background
 done
 
 # only on NameNode
