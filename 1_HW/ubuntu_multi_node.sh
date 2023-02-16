@@ -83,18 +83,18 @@ $shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[2]}$suffix_str:.ssh/
 $shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
 
 
-# for node_id in ${node_id_ary[@]}; do
-#     echo " ******** processing commands for node $node_id ******** ";
-#     echo "# $current_date" > $node_id.sh;
-#     final_cmd_str="$cmd_str$user_str@$server_str$node_id$suffix_str$script_str";
-#     echo -e "generated:    $final_cmd_str \n";
-#     echo "$final_cmd_str;" >> $node_id.sh;
-#     echo "echo results from node $node_id;" >> $node_id.sh;
-#     echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$node_id$suffix_str;" >> $node_id.sh;
-#     echo '$SHELL' >> $node_id.sh;
-#     chmod +x $node_id.sh;
-#     $shell_cmd "$directory/$node_id.sh" & # & with no ; to run in background
-# done
+for node_id in ${node_id_ary[@]}; do
+    echo " ******** processing commands for node $node_id ******** ";
+    echo "# $current_date" > $node_id.sh;
+    final_cmd_str="$cmd_str$user_str@$server_str$node_id$suffix_str$script_str";
+    echo -e "generated:    $final_cmd_str \n";
+    echo "$final_cmd_str;" >> $node_id.sh;
+    echo "echo results from node $node_id;" >> $node_id.sh;
+    echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$node_id$suffix_str;" >> $node_id.sh;
+    echo '$SHELL' >> $node_id.sh;
+    chmod +x $node_id.sh;
+    $shell_cmd "$directory/$node_id.sh" & # & with no ; to run in background
+done
 
 # only on NameNode
 #hdfs namenode -format
