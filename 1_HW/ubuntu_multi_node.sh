@@ -12,9 +12,19 @@
 # update me with node ids. this is also the last digits of the ip address
 #set -o pipefail
 
-node_id_ary=("126" "123" "127" "122"); # end of ip of machines we need to ssh to
+config_file="config.sh"
+directory=$(pwd)
 
-windows=1;
+if test -f $config_file; then
+    # Config File Exists execute it
+    . $config_file
+else
+    echo "Config File Template Copied"
+    echo "ENTER USRER VALUES INTO LOCAL config.sh"
+    cp config_template.sh config.sh
+    exit
+fi
+
 if (( $windows == 1 )) ; then
     shell_cmd="git-bash -e";
 else
@@ -22,9 +32,6 @@ else
 fi
 
 cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
-user_str="aroberge"; # update me with your username
-server_str="node"; # update me with your server
-suffix_str=".hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
@@ -40,7 +47,6 @@ echo $cmd >> ssh_master.sh
 echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str;" >> ssh_master.sh;
 echo '$SHELL' >> ssh_master.sh;
 chmod +x ssh_master.sh;
-directory=$(pwd)
 $shell_cmd "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str 'bash -s' << $directory/ssh_master.sh" & # & to run in background
 
 echo "Executing SCP Copy"
