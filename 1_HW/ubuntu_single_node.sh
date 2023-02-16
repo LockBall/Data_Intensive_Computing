@@ -23,6 +23,11 @@
 #     exit
 # fi
 
+# namenode knows the data contains, what block it bleongs to 
+# and where it goes. Namenode also controls when someone can 
+# write and read. Data nodes talk to the name nodes to know what to do
+#  
+
 DataNodes_id_ary=("2" "3" "4"); # workers
 reset_workers=0 # set to 1 to delete and regenerate workers file
 clean_hadoop=1
@@ -167,6 +172,7 @@ else
 
     echo -e " ******** modifying hdfs-site.xml ******** "
     hdfs_search_for='<configuration>';
+    #TODO: Add the hosts file that lists the datanodes 
     hdfs_replace_with=" <!-- added by $xml_modded script --> \n \
     <property> \n \
         <name>dfs.replication</name> \n \
@@ -195,6 +201,9 @@ else
 
     echo -e " ******** modifying yarn-site.xml ******** "
     yarn_search_for='<configuration>';
+    # Sets the Namenode as the resource manager
+    # Sets the shuffle service for map reduce applications
+    # Sets the map reduce classpath jar directory to be org.apache.hadoop.mapred.shufflehandler TODO: Maybe wrong
     yarn_replace_with=" <!-- added by $xml_modded script --> \n \
     <property> \n \
         <name>yarn.nodemanager.aux-services</name> \n \
@@ -223,6 +232,8 @@ else
 
     echo -e " ******** modifying mapred-site.xml ******** ";
     mapred_search_for='<configuration>';
+    #TODO: Mapreduce should be set to yarn
+    #Sets the jobtracker history server to namenode
     mapred_replace_with=" <!-- added by $xml_modded script --> \n \
     <property> \n \
         <name>mapreduce.jobtracker.address</name> \n \
