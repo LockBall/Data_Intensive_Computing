@@ -39,8 +39,13 @@ if test -f "ssh_master.sh"; then
     echo "Removing SSH Master shell"
     rm ssh_master.sh
 fi
+
+if test -f "tmp_keys"; then
+    echo "Removing tmp_keys Master shell"
+    rm tmp_keys
+fi
 echo "Executing Key Generation"
-cmd="ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa -y"
+cmd="ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1"
 echo $cmd >> ssh_master.sh
 cmd="cat .ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 echo $cmd >> ssh_master.sh
