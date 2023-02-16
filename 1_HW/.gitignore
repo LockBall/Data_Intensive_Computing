@@ -3,3 +3,4 @@ ssh_master.sh
 [0-9]*.sh
 multi_config.sh
 single_config.sh
+exec.sh

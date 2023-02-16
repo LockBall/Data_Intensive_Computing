@@ -45,14 +45,22 @@ if test -f "tmp_keys"; then
     rm tmp_keys
 fi
 echo "Executing Key Generation"
+cmd="#!/bin/bash"
+echo $cmd >> ssh_master.sh
 cmd="ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1"
 echo $cmd >> ssh_master.sh
 cmd="cat .ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 echo $cmd >> ssh_master.sh
-echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str;" >> ssh_master.sh;
+echo "echo 'ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str'" >> ssh_master.sh;
 echo '$SHELL' >> ssh_master.sh;
 chmod +x ssh_master.sh;
-$shell_cmd "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str 'bash -s' << $directory/ssh_master.sh" & # & to run in background
+if test -f exec.sh; then
+    rm exec.sh
+fi
+echo "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str < $directory/ssh_master.sh;" >> exec.sh; # & to run in background
+echo '$SHELL' >> exec.sh
+chmod +x exec.sh;
+$shell_cmd "$directory/exec.sh" &
 
 echo "Executing SCP Copy"
 $shell_cmd "scp $user_str@$server_str${node_id_ary[0]}$suffix_str:.ssh/authorized_keys tmp_keys"
