@@ -1,5 +1,5 @@
 #!/bin/bash
-# John Lutz - 15 Feb 2023
+# John Lutz - 16 Feb 2023
 # chmod a+x <filename> to set execute permissions for this file
 # run this script using:
 # $ sh ubuntu_multi_node.sh
@@ -9,21 +9,21 @@
 
 #$ ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
 
-windows=0
-if [ $windows -eq 1 ] 
-then
-    shell_cmd="git-bash -e"
+# update me with node ids. this is also the last digits of the ip address
+#set -o pipefail
+
+node_id_ary=("126" "123" "127" "122"); # end of ip of machines we need to ssh to
+
+windows=1;
+if (( $windows == 1 )) ; then
+    shell_cmd="git-bash -e";
 else
-    shell_cmd="gnome-terminal --command "
+    shell_cmd="gnome-terminal --command ";
 fi
 
 cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
 user_str="aroberge"; # update me with your username
 server_str="node"; # update me with your server
-
-# update me with node ids. this is also the last digits of the ip address
-node_id_ary=("0" "1" "2" "3"); 
-
 suffix_str=".hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
@@ -50,8 +50,7 @@ $shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[2]}$suffix_str:.ssh/
 $shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
 
 
-for node_id in ${node_id_ary[@]};
-do
+for node_id in ${node_id_ary[@]}; do
     echo " ******** processing commands for node $node_id ******** ";
     echo "# $current_date" > $node_id.sh;
     final_cmd_str="$cmd_str$user_str@$server_str$node_id$suffix_str$script_str";
@@ -61,7 +60,7 @@ do
     echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$node_id$suffix_str;" >> $node_id.sh;
     echo '$SHELL' >> $node_id.sh;
     chmod +x $node_id.sh;
-    $shell_cmd "$directory/$node_id.sh" & # & to run in background
+    $shell_cmd "$directory/$node_id.sh" & # & with no ; to run in background
 done
 
 # only on NameNode
