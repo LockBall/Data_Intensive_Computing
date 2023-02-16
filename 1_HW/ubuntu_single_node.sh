@@ -29,7 +29,7 @@
 #  
 
 DataNodes_id_ary=("2" "3" "4"); # workers
-reset_workers=0 # set to 1 to delete and regenerate workers file
+reset_workers=1 # set to 1 to delete and regenerate workers file
 clean_hadoop=1
 ip_3="10.10.1.";
 NN0="1";
@@ -38,8 +38,8 @@ DN2="3";
 DN3="4";
 
 xml_modded="single_node";
-masters_reset=0;
-workers_reset=0;
+masters_reset=1;
+workers_reset=1;
 data_reset=0;
 
 echo -e " ____________________ connected to target ____________________ \n";
@@ -239,9 +239,21 @@ else
         <name>mapreduce.jobtracker.address</name> \n \
         <value>$ip_3$NN0:54311</value> \n \
     </property> \n \
+        <property> \n \
+        <name>yarn.app.mapreduce.am.env</name> \n \
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
+    </property> \n \
+        <property> \n \
+        <name>mapreduce.map.env</name> \n \
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>mapreduce.reduce.env</name> \n \
+        <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
+    </property> \n \
     <property> \n \
         <name>mapreduce.framework.name</name> \n \
-        <value>mapred</value> \n \
+        <value>yarn</value> \n \
     </property>
     ";
     sed -i "/$mapred_search_for/a $mapred_replace_with" /usr/local/hadoop/etc/hadoop/mapred-site.xml;
