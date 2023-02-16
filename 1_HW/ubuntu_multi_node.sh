@@ -12,7 +12,7 @@
 # update me with node ids. this is also the last digits of the ip address
 #set -o pipefail
 
-config_file="config.sh"
+config_file="multi_config.sh"
 directory=$(pwd)
 
 if test -f $config_file; then
@@ -21,7 +21,7 @@ if test -f $config_file; then
 else
     echo "Config File Template Copied"
     echo "ENTER USRER VALUES INTO LOCAL config.sh"
-    cp config_template.sh config.sh
+    cp multi_config_template.sh config.sh
     exit
 fi
 

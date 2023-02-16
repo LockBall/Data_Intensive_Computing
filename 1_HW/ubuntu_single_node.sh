@@ -9,19 +9,19 @@
 # https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
 
 #set -o pipefail;
-DataNodes_id_ary=("2" "3" "4"); # workers
-reset_workers=0 # set to 1 to delete and regenerate workers file
-clean_hadoop=1
-ip_3="10.10.1.";
-NN0="1";
-DN1="2";
-DN2="3";
-DN3="4";
+# Load Config File
+config_file="single_config.sh"
+directory=$(pwd)
 
-xml_modded="single_node";
-masters_reset=0;
-workers_reset=0;
-data_reset=0;
+if test -f $config_file; then
+    # Config File Exists execute it
+    . $config_file
+else
+    echo "Config File Template Copied"
+    echo "ENTER USRER VALUES INTO LOCAL config.sh"
+    cp single_config_template.sh config.sh
+    exit
+fi
 
 echo -e " ____________________ connected to target ____________________ \n";
 

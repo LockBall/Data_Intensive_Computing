@@ -1,5 +1,5 @@
 #!/bin/bash
-## Config File ##
+## Multi Node Config File ##
 node_id_ary=("0" "1" "2" "3"); # end of ip of machines we need to ssh to
 windows=0;
 user_str="aroberge"; # update me with your username
