@@ -20,8 +20,8 @@ if test -f $config_file; then
     . $config_file
 else
     echo "Config File Template Copied"
-    echo "ENTER USRER VALUES INTO LOCAL config.sh"
-    cp multi_config_template.sh config.sh
+    echo "ENTER USER VALUES INTO MUTLI LOCAL multi_config.sh"
+    cp multi_config_template.sh multi_config.sh
     exit
 fi
 

@@ -1,8 +1,5 @@
 tmp_keys
-0.sh
-1.sh
-2.sh
-3.sh
-4.sh
-ssh_master.ssh
-config.sh
+ssh_master.sh
+[0-9]*.sh
+multi_config.sh
+single_config.sh
