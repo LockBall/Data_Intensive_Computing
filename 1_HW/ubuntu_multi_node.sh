@@ -1,5 +1,5 @@
 #!/bin/bash
-# John Lutz - 13 Feb 2023
+# John Lutz - 16 Feb 2023
 # chmod a+x <filename> to set execute permissions for this file
 # run this script using:
 # $ sh ubuntu_multi_node.sh
@@ -13,6 +13,13 @@
 #set -o pipefail
 
 node_id_ary=("126" "123" "127" "122"); # end of ip of machines we need to ssh to
+
+windows=1;
+if (( $windows == 1 )) ; then
+    shell_cmd="git-bash -e";
+else
+    shell_cmd="gnome-terminal --command ";
+fi
 
 cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
 user_str="LutzD00D";
@@ -29,9 +36,10 @@ for node_id in ${node_id_ary[@]}; do
     echo "$final_cmd_str;" >> $node_id.sh;
     echo "echo results from node $node_id;" >> $node_id.sh;
     echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id.apt.emulab.net;" >> $node_id.sh;
-    
-    #echo 'set -o pipefail' >> $node_id.sh;
     echo '$SHELL' >> $node_id.sh;
     chmod +x $node_id.sh;
-    git-bash -e $node_id.sh & # & with no ;to run in background
+    $shell_cmd $node_id.sh & # & with no ;to run in background
 done
+
+# only on NameNode
+#hdfs namenode -format
