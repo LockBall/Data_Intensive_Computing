@@ -1,5 +1,5 @@
 #!/bin/bash
-# John Lutz - 15 Feb 2023
+# John Lutz - 13 Feb 2023
 # chmod a+x <filename> to set execute permissions for this file
 # run this script using:
 # $ sh ubuntu_multi_node.sh
@@ -9,19 +9,19 @@
 
 #$ ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
 
-cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
-user_str="LutzD00D"; # update me with your username
-server_str="@apt"; # update me with your server
-
 # update me with node ids. this is also the last digits of the ip address
-node_id_ary=("150" "147" "139" "138"); 
+#set -o pipefail
 
+node_id_ary=("126" "123" "127" "122"); # end of ip of machines we need to ssh to
+
+cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
+user_str="LutzD00D";
+server_str="@apt"; # update me with your server
 suffix_str=".apt.emulab.net";
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
-for node_id in ${node_id_ary[@]};
-do
+for node_id in ${node_id_ary[@]}; do
     echo " ******** processing commands for node $node_id ******** ";
     echo "# $current_date" > $node_id.sh;
     final_cmd_str="$cmd_str$user_str$server_str$node_id$suffix_str$script_str";
@@ -29,10 +29,9 @@ do
     echo "$final_cmd_str;" >> $node_id.sh;
     echo "echo results from node $node_id;" >> $node_id.sh;
     echo "echo ssh -o StrictHostKeyChecking=no -t LutzD00D@apt$node_id.apt.emulab.net;" >> $node_id.sh;
+    
+    #echo 'set -o pipefail' >> $node_id.sh;
     echo '$SHELL' >> $node_id.sh;
     chmod +x $node_id.sh;
-    git-bash -e $node_id.sh & # & to run in background
+    git-bash -e $node_id.sh & # & with no ;to run in background
 done
-
-# only on NameNode
-#hdfs namenode -format
