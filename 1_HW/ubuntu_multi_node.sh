@@ -12,21 +12,21 @@
 # update me with node ids. this is also the last digits of the ip address
 #set -o pipefail
 
-config_file="multi_config.sh"
-directory=$(pwd)
+config_file="multi_config.sh";
+directory=$(pwd);
 
-if test -f $config_file; then
-    # Config File Exists execute it
-    . $config_file
+if test -f $config_file;
+    then echo "Config File Exists, source it.";
+    source ./$config_file;
 else
-    echo "Config File Template Copied"
-    echo "ENTER USER VALUES INTO MUTLI LOCAL multi_config.sh"
-    cp multi_config_template.sh multi_config.sh
+    echo "Config File Template Copied";
+    echo "ENTER USER VALUES INTO MULTI LOCAL $config_file";
+    cp multi_config_template.sh $config_file;
     exit
 fi
 
-if (( $windows == 1 )) ; then
-    shell_cmd="git-bash -e";
+if (( $windows == 1 )) ;
+    then shell_cmd="git-bash -e";
 else
     shell_cmd="gnome-terminal --command ";
 fi
@@ -35,14 +35,14 @@ cmd_str="ssh -o StrictHostKeyChecking=no -t "; # -o StrictHostKeyChecking no
 script_str=" < ubuntu_single_node.sh";
 current_date=$(date);
 
-if test -f "ssh_master.sh"; then
-    echo "Removing SSH Master shell"
-    rm ssh_master.sh
+if test -f "ssh_master.sh";
+    then echo "Removing SSH Master shell";
+    rm ssh_master.sh;
 fi
 
-if test -f "tmp_keys"; then
-    echo "Removing tmp_keys Master shell"
-    rm tmp_keys
+if test -f "tmp_keys";
+    then echo "Removing tmp_keys Master shell";
+    rm tmp_keys;
 fi
 echo "Executing Key Generation"
 cmd="#!/bin/bash"
@@ -61,14 +61,14 @@ cmd="ssh-keygen -q -t rsa -N '' -f ~/.ssh/id_rsa <<<y >/dev/null 2>&1"
 echo $cmd >> ssh_master.sh
 cmd="cat .ssh/id_rsa.pub >> ~/.ssh/authorized_keys"
 echo $cmd >> ssh_master.sh
-echo "echo 'ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str'" >> ssh_master.sh;
+echo "echo 'ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str'" >> ssh_master.sh;
 
 echo '$SHELL' >> ssh_master.sh;
 chmod +x ssh_master.sh;
 if test -f exec.sh; then
     rm exec.sh
 fi
-echo "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${node_id_ary[0]}$suffix_str < $directory/ssh_master.sh;" >> exec.sh; # & to run in background
+echo "ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < $directory/ssh_master.sh;" >> exec.sh; # & to run in background
 echo '$SHELL' >> exec.sh
 chmod +x exec.sh;
 $shell_cmd "$directory/exec.sh"
@@ -76,24 +76,24 @@ $shell_cmd "$directory/exec.sh"
 # Sleeps are needed to wait for the scp to occur and keygen to happen
 sleep 2
 echo "Executing SCP Copy"
-$shell_cmd "scp $user_str@$server_str${node_id_ary[0]}$suffix_str:.ssh/authorized_keys tmp_keys"
+$shell_cmd "scp $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:.ssh/authorized_keys tmp_keys"
 sleep 2
-$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[1]}$suffix_str:.ssh/authorized_keys"
-$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[2]}$suffix_str:.ssh/authorized_keys"
-$shell_cmd "scp tmp_keys $user_str@$server_str${node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[1]}$suffix_str:.ssh/authorized_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[2]}$suffix_str:.ssh/authorized_keys"
+$shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
 
 
-for node_id in ${node_id_ary[@]}; do
+for ext_node_id in ${ext_node_id_ary[@]}; do
     echo " ******** processing commands for node $node_id ******** ";
-    echo "# $current_date" > $node_id.sh;
-    final_cmd_str="$cmd_str$user_str@$server_str$node_id$suffix_str$script_str";
+    echo "# $current_date" > $ext_node_id.sh;
+    final_cmd_str="$cmd_str$user_str@$server_str$ext_node_id$suffix_str$script_str";
     echo -e "generated:    $final_cmd_str \n";
-    echo "$final_cmd_str;" >> $node_id.sh;
-    echo "echo results from node $node_id;" >> $node_id.sh;
-    echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$node_id$suffix_str;" >> $node_id.sh;
-    echo '$SHELL' >> $node_id.sh;
-    chmod +x $node_id.sh;
-    $shell_cmd "$directory/$node_id.sh" & # & with no ; to run in background
+    echo "$final_cmd_str;" >> $ext_node_id.sh;
+    echo "echo results from node $ext_node_id;" >> $ext_node_id.sh;
+    echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$ext_node_id$suffix_str;" >> $ext_node_id.sh;
+    echo '$SHELL' >> $ext_node_id.sh;
+    chmod +x $ext_node_id.sh;
+    $shell_cmd "$directory/$ext_node_id.sh" & # & with no ; to run in background
 done
 
 # only on NameNode
