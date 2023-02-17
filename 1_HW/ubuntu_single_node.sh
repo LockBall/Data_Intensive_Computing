@@ -35,7 +35,8 @@ DN1="144";
 DN2="149";
 DN3="148";
 
-if grep -q NameNode0 /etc/hosts; then echo -e " ******** node IP's already in /etc/hosts ******** \n";
+if grep -q NameNode0 /etc/hosts;
+    then echo -e " ******** node IP's already in /etc/hosts ******** \n";
 else
     echo -e " ******** adding node IP's to /etc/hosts ******** ";
     sudo -- sh -c -e "echo '
@@ -79,20 +80,20 @@ else
 fi
 
 echo -e " ____________________ processing backup folder ____________________ \n";
-if test -d "/usr/local/hadoop/backups"; then
-    echo -e " ******** backup directory exists ******** \n";
+if test -d "/usr/local/hadoop/backups";
+    then echo -e " ******** backup directory exists ******** \n";
 else
     echo -e " ******** making backup directory ******** \n";
     mkdir /usr/local/hadoop/backups;
 fi
 
 # ____________________ BEGIN set JAVA_HOME ____________________
-if grep -q readlink /usr/local/hadoop/etc/hadoop/hadoop-env.sh
+if grep -q readlink /usr/local/hadoop/etc/hadoop/hadoop-env.sh;
     then echo " ******** JAVA_HOME already set ******** ";
 else
-    if test -f "/usr/local/hadoop/etc/hadoop/hadoop-env.sh"; then
-        echo " ******** backup hadoop-env.sh ******** ";
-        cp /usr/local/hadoop/etc/hadoop/hadoop-env.sh /usr/local/hadoop/backups/
+    if test -f "/usr/local/hadoop/etc/hadoop/hadoop-env.sh";
+        then echo " ******** backup hadoop-env.sh ******** ";
+        cp /usr/local/hadoop/etc/hadoop/hadoop-env.sh /usr/local/hadoop/backups/;
 
         echo " ******** setting JAVA_HOME ******** ";
         search_for='# export JAVA_HOME=';
@@ -105,7 +106,7 @@ fi
 
 
 # ____________________ BEGIN add hadoop paths to ~/.bashrc ____________________
-if grep -q hadoop ~/.bashrc
+if grep -q hadoop ~/.bashrc;
     then echo -e " ******** hadoop paths already in ~/.bashrc ******** \n";
 else
     echo " ******** adding hadoop paths to ~/.bashrc ******** \n"; # same same ↓↓
@@ -127,8 +128,8 @@ source ~/.bashrc;
 echo -e " ____________________ Process *.xml files ____________________ \n";
 
 # ____________________ BEGIN core-site.xml ____________________
-if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/core-site.xml; then
-    echo -e " ******** core-site.xml already modified ******** \n";
+if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/core-site.xml;
+    then echo -e " ******** core-site.xml already modified ******** \n";
 else
     echo " ******** backing up core-site.xml ******** ";
     # cp /usr/local/hadoop/etc/hadoop/core-site.xml /usr/local/hadoop/backups;
@@ -144,14 +145,14 @@ else
     # sed -i "/$core_search_for/a $core_replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
 fi
 
-if  (( xml_reset == 1)); then
-    cp /usr/local/hadoop/backups/core-site.xml /usr/local/hadoop/etc/hadoop/;
+if  (( xml_reset == 1));
+    then cp /usr/local/hadoop/backups/core-site.xml /usr/local/hadoop/etc/hadoop/;
 fi
 # ____________________ END core-site.xml ____________________
 
 
 # # ____________________ hdfs-site.xml ____________________
-# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/hdfs-site.xml
+# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/hdfs-site.xml;
 #     then echo -e " ******** hdfs-site.xml already modified ******** \n"
 # else
 #     echo -e " ******** backing up hdfs-site.xml ******** ";
@@ -179,7 +180,7 @@ fi
 
 
 # # ____________________ yarn-site.xml ____________________
-# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/yarn-site.xml 
+# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/yarn-site.xml;
 #     then echo -e " ******** yarn-site.xml already modified ******** \n"
 # else
 #     echo -e " ******** backing up yarn-site.xml ******** ";
@@ -207,8 +208,8 @@ fi
 
 # # ____________________ mapred-site.xml ____________________
 # # only required on NameNode, will not harm datanodes
-# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/mapred-site.xml; then
-#     echo -e " ******** mapred-site.xml already modified ******** ";
+# if grep -q $xml_modded_by /usr/local/hadoop/etc/hadoop/mapred-site.xml;
+    # then echo -e " ******** mapred-site.xml already modified ******** ";
 # else
 #     echo -e " ******** backing up mapred-site.xml ******** ";
 #     cp /usr/local/hadoop/etc/hadoop/mapred-site.xml /usr/local/hadoop/backups;
@@ -232,15 +233,15 @@ fi
 
 # # ____________________ masters file ____________________
 # echo -e "\n ____________________ process masters file ____________________ ";
-# if (( $masters_reset == 1 )); then
-#     echo " ******** masters reset enabled ******** ";
+# if (( $masters_reset == 1 ));
+#     then echo " ******** masters reset enabled ******** ";
 #     rm /usr/local/hadoop/etc/hadoop/masters;
 # else
 #     echo " ******** masters reset disabled ******** ";
 # fi
 
-# if test -f "/usr/local/hadoop/etc/hadoop/masters"; then
-#     echo " ******** masters file exists ******** ";
+# if test -f "/usr/local/hadoop/etc/hadoop/masters";
+#     then echo " ******** masters file exists ******** ";
 # else
 #     echo " ******** masters file not found, creating it ******** ";
 #     touch /usr/local/hadoop/etc/hadoop/masters;
