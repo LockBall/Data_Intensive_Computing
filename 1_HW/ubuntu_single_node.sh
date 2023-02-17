@@ -323,34 +323,34 @@ fi
 # ____________________ workers file ____________________
 
 
-# # ____________________ data dir ____________________
-# echo -e "\n ____________________ process data dir ____________________ ";
-# if (( $data_reset == 1 ));
-#     then echo " **** data reset enabled **** ";
-#     sudo rm -r -f /usr/local/hadoop/hdfs/data;
-# else
-#     echo " **** data reset disabled **** ";
-# fi
+# ____________________ data dir ____________________
+echo -e "\n ____________________ process data dir ____________________ ";
+if (( $data_reset == 1 ));
+    then echo " **** data reset enabled **** ";
+    sudo rm -r -f /usr/local/hadoop/hdfs/data;
+else
+    echo " **** data reset disabled **** ";
+fi
 
-# if test -d "/usr/local/hadoop/hdfs/data";
-#     then echo " **** data folder already exists **** ";
-# else
-#     echo " **** making data dir **** ";
-#     mkdir -p /usr/local/hadoop/hdfs/data;
-#     sudo chown -R $(id -u):$(id -g) /usr/local/hadoop/hdfs/data;
-#     chmod 700 /usr/local/hadoop/hdfs/data;
-# fi
-# # ____________________ data dir ____________________
+if test -d "/usr/local/hadoop/hdfs/data";
+    then echo " **** data folder already exists **** ";
+else
+    echo " **** making data dir **** ";
+    mkdir -p /usr/local/hadoop/hdfs/data;
+    sudo chown -R $(id -u):$(id -g) /usr/local/hadoop/hdfs/data;
+    chmod 700 /usr/local/hadoop/hdfs/data;
+fi
+# ____________________ data dir ____________________
 
 
-# echo -e "____________________ Running Example ____________________ \n";
-# cd $HOME
-# rm -r -f ~/input;
-# mkdir ~/input;
-# cp /usr/local/hadoop/etc/hadoop/*.xml ~/input;
-# /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*';
-# echo -e "\n";
-# cat ~/grep_example/*;
+echo -e "____________________ Running Example ____________________ \n";
+cd $HOME
+rm -r -f ~/input;
+mkdir ~/input;
+cp /usr/local/hadoop/etc/hadoop/*.xml ~/input;
+/usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*';
+echo -e "\n";
+cat ~/grep_example/*;
 
 # # should return
 # # 22    allowed.
