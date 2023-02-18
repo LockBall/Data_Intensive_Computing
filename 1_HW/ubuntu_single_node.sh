@@ -19,7 +19,6 @@ DN2="3";
 DN3="4";
 
 xml_modded="single_node";
-
 xml_reset=0;
 data_reset=0;
 clean_hadoop=0;
