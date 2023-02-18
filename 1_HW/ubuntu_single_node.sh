@@ -20,8 +20,6 @@ DN3="4";
 
 xml_modded="single_node";
 
-masters_reset=0;
-workers_reset=0;
 xml_reset=0;
 data_reset=0;
 clean_hadoop=0;
@@ -267,47 +265,27 @@ fi
 
 # ____________________ masters file ____________________
 echo -e "\n ____________________ process masters file ____________________ ";
-if (( $masters_reset == 1 ));
-    then echo " **** masters reset enabled **** ";
-    rm /usr/local/hadoop/etc/hadoop/masters;
-else
-    echo " **** masters reset disabled **** ";
-fi
 
-if test -f "/usr/local/hadoop/etc/hadoop/masters";
-    then echo " **** masters file exists **** ";
-else
-    echo " **** masters file not found, creating it **** ";
-    touch /usr/local/hadoop/etc/hadoop/masters;
-    echo "$ip_3$NN0" >> /usr/local/hadoop/etc/hadoop/masters;
-fi
+echo " **** Removing Masters file **** ";
+rm /usr/local/hadoop/etc/hadoop/masters;
+echo " **** Creating Masters file **** ";
+touch /usr/local/hadoop/etc/hadoop/masters;
+echo "$ip_3$NN0" >> /usr/local/hadoop/etc/hadoop/masters;
+
 # ____________________ masters file ____________________
 
 
 # ____________________ workers file ____________________
 echo -e "\n ____________________ process workers file ____________________ ";
-if (( $workers_reset == 1 ));
-    then echo " **** workers reset enabled **** ";
-    rm /usr/local/hadoop/etc/hadoop/workers;
-else
-    echo " **** workers reset disabled **** ";
-fi
+echo " **** Removing Workers file **** ";
+rm /usr/local/hadoop/etc/hadoop/workers;
+echo " **** Creating Workers file**** ";
+touch /usr/local/hadoop/etc/hadoop/workers;
+for data_node_id in ${DataNodes_id_ary[@]};
+    do echo "$ip_3$data_node_id" >> /usr/local/hadoop/etc/hadoop/workers;
+done
 
-if grep -q localhost /usr/local/hadoop/etc/hadoop/workers;
-    then echo " **** localhost in workers, removing file **** "
-    rm /usr/local/hadoop/etc/hadoop/workers;
-fi
 
-if test -f "/usr/local/hadoop/etc/hadoop/workers";
-    then echo " **** workers file exists **** ";
-else
-    echo " **** workers file not found, creating it **** ";
-    touch /usr/local/hadoop/etc/hadoop/workers;
-
-    for data_node_id in ${DataNodes_id_ary[@]};
-        do echo "$ip_3$data_node_id" >> /usr/local/hadoop/etc/hadoop/workers;
-    done
-fi
 # ____________________ workers file ____________________
 
 
