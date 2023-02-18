@@ -7,7 +7,8 @@
 # must add git folder to environment variables
 # https://github.com/Robert923/vscode-start-git-bash/issues/1
 
-#$ ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
+# ssh -o StrictHostKeyChecking=no -t LutzD00D@apt112.apt.emulab.net
+# ssh -o StrictHostKeyChecking=no -t LutzD00D@apt099.apt.emulab.net < ubuntu_multi_node.sh
 
 # update me with node ids. this is also the last digits of the ip address
 #set -o pipefail
@@ -83,16 +84,16 @@ fi
 # $shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[1]}$suffix_str:.ssh/authorized_keys"
 # $shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[2]}$suffix_str:.ssh/authorized_keys"
 # $shell_cmd "scp tmp_keys $user_str@$server_str${ext_node_id_ary[3]}$suffix_str:.ssh/authorized_keys"
-# # ____________________ The Keymaker ____________________
 
 
-for ext_node_id in ${ext_node_id_ary[@]}; do
-    echo " ******** processing commands for node $node_id ******** ";
+for ext_node_id in ${ext_node_id_ary[@]};
+    do
+    echo " **** processing commands for node $ext_node_id **** ";
     echo "# $current_date" > $ext_node_id.sh;
     final_cmd_str="$cmd_str$user_str@$server_str$ext_node_id$suffix_str$script_str";
     echo -e "generated:    $final_cmd_str \n";
     echo "$final_cmd_str;" >> $ext_node_id.sh;
-    echo "echo results from node $ext_node_id;" >> $ext_node_id.sh;
+    echo "echo finished setting up node $ext_node_id;" >> $ext_node_id.sh;
     echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$ext_node_id$suffix_str;" >> $ext_node_id.sh;
     echo '$SHELL' >> $ext_node_id.sh;
     chmod +x $ext_node_id.sh;

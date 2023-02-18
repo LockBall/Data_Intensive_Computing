@@ -351,16 +351,4 @@ fi
 # ____________________ data dir ____________________
 
 
-echo -e "____________________ Running Example ____________________ \n";
-cd $HOME
-mkdir ~/input;
-cp /usr/local/hadoop/etc/hadoop/*.xml ~/input;
-/usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*';
-echo -e "\n";
-cat ~/grep_example/*;
-
-# # should return
-# # 22    allowed.
-# # 1    allowed
-
 $SHELL
