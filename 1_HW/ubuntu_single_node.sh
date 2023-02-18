@@ -9,8 +9,8 @@
 # # https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
 
 # #set -o pipefail;
-
-echo "running ubuntu_single_node.sh";
+current_date=$(date);
+echo "running ubuntu_single_node.sh $current_date";
 
 DataNodes_id_ary=("2" "3" "4"); # workers
 ip_3="10.10.1.";
@@ -25,13 +25,22 @@ masters_reset=0;
 workers_reset=0;
 xml_reset=0;
 data_reset=0;
-clean_hadoop=0
+clean_hadoop=0;
 
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
 
 echo -e " ____________________ connected to target ____________________ \n";
+
+if test -f "/users/LutzD00D/.ssh/id_rsa.pub";
+    then echo " **** publickey already exists **** ";
+else
+    echo " **** generating key pair **** ";
+    ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y;
+    # Your public key has been saved in /users/LutzD00D/.ssh/id_rsa.pub
+    # https://stackoverflow.com/questions/43235179/how-to-execute-ssh-keygen-without-prompt
+fi
 
 
 # # ____________________ BEGIN add nodes to hosts ____________________
@@ -69,7 +78,6 @@ sudo apt-get install -y pdsh;
 echo -e "\n **** java **** ";
 sudo apt install -y default-jdk;
 java -version;
-
 
 
 echo -e "\n ____________________ hadoop ____________________ ";
@@ -345,7 +353,6 @@ fi
 
 echo -e "____________________ Running Example ____________________ \n";
 cd $HOME
-rm -r -f ~/input;
 mkdir ~/input;
 cp /usr/local/hadoop/etc/hadoop/*.xml ~/input;
 /usr/local/hadoop/bin/hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep ~/input ~/grep_example 'allowed[.]*';
