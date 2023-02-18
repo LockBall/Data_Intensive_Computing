@@ -31,7 +31,7 @@ echo -e " ____________________ connected to target ____________________ \n";
 
 # ____________________ The Keymaker ____________________
 
-if test -f "/users/LutzD00D/.ssh/id_rsa.pub";
+if test -f "~/.ssh/id_rsa.pub";
     then echo " **** publickey already exists **** ";
 else
     echo " **** generating key pair **** ";
