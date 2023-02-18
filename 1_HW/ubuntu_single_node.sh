@@ -35,6 +35,11 @@ if test -f "~/.ssh/id_rsa.pub";
     then echo " **** publickey already exists **** ";
 else
     echo " **** generating key pair **** ";
+    if test -f "~/.ssh/backup_keys";
+        then echo "Backup Key exist already";
+    else
+        cp ~/.ssh/authorized_keys ~/.ssh/backup_keys
+    fi
     ssh-keygen -t rsa -N '' -f ~/.ssh/id_rsa <<< y;
     # Your public key has been saved in /users/LutzD00D/.ssh/id_rsa.pub
     # https://stackoverflow.com/questions/43235179/how-to-execute-ssh-keygen-without-prompt

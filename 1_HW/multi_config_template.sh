@@ -1,7 +1,7 @@
 #!/bin/bash
 ## Multi Node Config File ##
 ext_node_id_ary=("000" "000" "000" "000"); # end of external ip of machines we need to ssh to
-int_node_id_ary=("0" "1" "2" "3"); # end of internal ip
+int_node_id_ary=("1" "2" "3" "4"); # end of internal ip
 windows=0;
 user_str="aroberge"; # update me with your username, LutzD00D    aroberge
 server_str="node"; # update me with your server, apt
