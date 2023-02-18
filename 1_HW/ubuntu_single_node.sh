@@ -32,6 +32,8 @@ clean_hadoop=0;
 
 echo -e " ____________________ connected to target ____________________ \n";
 
+# ____________________ The Keymaker ____________________
+
 if test -f "/users/LutzD00D/.ssh/id_rsa.pub";
     then echo " **** publickey already exists **** ";
 else
@@ -40,6 +42,7 @@ else
     # Your public key has been saved in /users/LutzD00D/.ssh/id_rsa.pub
     # https://stackoverflow.com/questions/43235179/how-to-execute-ssh-keygen-without-prompt
 fi
+# ____________________ The Keymaker ____________________
 
 
 echo -e " ____________________ installing ____________________ ";
