@@ -1,6 +1,6 @@
 # #!/bin/bash
 
-# # John Lutz - 13 Feb 2023
+# # John Lutz - 18 Feb 2023
 # # chmod a+x <filename> to set execute permissions for this file
 # # run me using this command, where pc?? is the ID of the ubuntu node
 # # ssh -t LutzD00D@pc07.cloudlab.umass.edu < ubuntu_single_node.sh
@@ -8,7 +8,6 @@
 
 # # https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
 
-# #set -o pipefail;
 current_date=$(date);
 echo "running ubuntu_single_node.sh $current_date";
 
@@ -41,28 +40,6 @@ else
     # Your public key has been saved in /users/LutzD00D/.ssh/id_rsa.pub
     # https://stackoverflow.com/questions/43235179/how-to-execute-ssh-keygen-without-prompt
 fi
-
-
-# # ____________________ BEGIN add nodes to hosts ____________________
-# # these ip must be manually edited and be the same as in ubuntu_multi_nodes.sh
-# # echo -e "____________________ processing hosts file ____________________" ;
-# # ip_3="128.110.96.";
-# # NN0="126";
-# # DN1="123";
-# # DN2="127";
-# # DN3="122";
-
-# # if grep -q NameNode0 /etc/hosts; then
-# #     echo -e " **** node IP's already in /etc/hosts **** \n";
-# # else
-# #     echo -e " **** adding node IP's to /etc/hosts **** ";
-# #     sudo --sh -c -e "echo'
-# # $ip_3$NN0    NameNode0
-# # $ip_3$DN1    DataNode1
-# # $ip_3$DN2    DataNode2
-# # $ip_3$DN3    DataNode3' >> /etc/hosts";
-# # fi
-# # # ____________________ END add nodes to hosts ____________________
 
 
 echo -e " ____________________ installing ____________________ ";

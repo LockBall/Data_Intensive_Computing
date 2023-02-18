@@ -89,11 +89,5 @@ fi
 # ____________________ Node0 (NameNode) initial login to DataNodes ____________________
 ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < name_login_others.sh;
 
-
-# scp ./remote_key/id_rsa.pub LutzD00D@apt${ext_node_id_ary[1]}.apt.emulab.net:/users/LutzD00D/.ssh/authorized_keys;
-# scp ./remote_key/id_rsa.pub LutzD00D@apt${ext_node_id_ary[2]}.apt.emulab.net:/users/LutzD00D/.ssh/authorized_keys;
-# scp ./remote_key/id_rsa.pub LutzD00D@apt${ext_node_id_ary[3]}.apt.emulab.net:/users/LutzD00D/.ssh/authorized_keys;
-
-# scp <remote_user_name>@remote_IP:./<remote_file_name> ./
-# scp LutzD00D@apt007.apt.emulab.net:./test.txt ./;
-# scp LutzD00D@apt136.apt.emulab.net:/users/LutzD00D/.ssh/id_rsa.pub ./remote_key/;
+# ____________________ Node0 (NameNode) wordcount example ____________________
+ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < wordcount_example_namenode.sh;
