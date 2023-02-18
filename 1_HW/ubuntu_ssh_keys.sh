@@ -63,22 +63,23 @@ touch name_login_othersmment.sh;
 
 if test -f "./remote_key/id_rsa.pub";
     then
-    for ext_node_id_ary_pos in ${!ext_node_id_ary[@]};
+    for ext_node_id in ${ext_node_id_ary[@]};
         do
-        ext_node_id=${ext_node_id_ary[$ext_node_id_ary_pos]};
+        # ext_node_id=${ext_node_id_ary[$ext_node_id_ary_pos]};
 
-        if (( $ext_node_id_ary_pos > 0 )); # nodes other than 0
-            then echo " **** sending NameNode publickey to node $ext_node_id **** ";
+        # if (( $ext_node_id_ary_pos > 0 )); # nodes other than 0
+            # then 
+            echo " **** sending NameNode publickey to node $ext_node_id **** ";
             cat ./comment.txt | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
             cat ./remote_key/id_rsa.pub | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
             # cat ./comment.txt | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
             # cat ./remote_key/id_rsa.pub | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
 
             echo " **** populating name_login_others.sh for node $ext_node_id **** " ;
-            echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$ext_node_id$suffix_str;" >> name_login_others.sh;
-        else
-            echo " **** skipping node $ext_node_id **** ";
-        fi
+            echo "echo ssh -o StrictHostKeyChecking=no -t node$ext_node_id_ary_pos;" >> name_login_others.sh;
+        # else
+            # echo " **** skipping node $ext_node_id **** ";
+        # fi
     done
 else
     echo " **** id_rsa.pub missing **** ";
@@ -90,4 +91,4 @@ fi
 ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < name_login_others.sh;
 
 # ____________________ Node0 (NameNode) wordcount example ____________________
-ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < wordcount_example_namenode.sh;
+# ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < wordcount_example_namenode.sh;
