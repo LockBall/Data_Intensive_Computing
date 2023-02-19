@@ -282,15 +282,15 @@ echo "$ip_3$NN0" >> /usr/local/hadoop/etc/hadoop/masters;
 
 # ____________________ workers file ____________________
 echo -e "\n ____________________ process workers file ____________________ ";
-echo " **** Removing Workers file **** ";
-rm /usr/local/hadoop/etc/hadoop/workers;
+if test -f /usr/local/hadoop/etc/hadoop/workers;
+    then echo " **** Removing Workers file **** ";
+    rm /usr/local/hadoop/etc/hadoop/workers;
+fi
 echo " **** Creating Workers file**** ";
 touch /usr/local/hadoop/etc/hadoop/workers;
 for data_node_id in ${DataNodes_id_ary[@]};
     do echo "$ip_3$data_node_id" >> /usr/local/hadoop/etc/hadoop/workers;
 done
-
-
 # ____________________ workers file ____________________
 
 
