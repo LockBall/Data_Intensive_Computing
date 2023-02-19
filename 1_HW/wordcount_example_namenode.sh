@@ -21,13 +21,14 @@ hdfs namenode -format;
 echo " **** start-all **** ";
 start-all.sh
 
-# echo " **** make tmp and to_count dir **** ";
+
 hadoop fs -mkdir -p /tmp/
-#RUN on Local machine
-scp around_the_world.txt $user_str@$server_str$ext_node_id_ary[0]$suffix_str:~/around_the_world.txt
+
 hadoop fs -put around_the_world.txt /tmp/around_the_world.txt
+
 # echo " ****  Run wordcount <in> <outdir> **** "; 
 hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /tmp/around_the_world.txt /tmp/out
+
 #Get output from wordcount
 hadoop fs -get /tmp/out local_out
 #Output is at local_out/part-r-xxxx

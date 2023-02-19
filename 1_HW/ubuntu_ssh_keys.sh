@@ -86,9 +86,9 @@ else
 fi
 # ____________________ The Keymaker ____________________
 
+# send the nodes a good read
+scp around_the_world.txt $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:~/around_the_world.txt
 
 # ____________________ Node0 (NameNode) initial login to DataNodes ____________________
 ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < name_login_others.sh;
 
-# ____________________ Node0 (NameNode) wordcount example ____________________
-# ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < wordcount_example_namenode.sh;
