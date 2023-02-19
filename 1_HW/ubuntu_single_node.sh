@@ -269,9 +269,10 @@ fi
 
 # ____________________ masters file ____________________
 echo -e "\n ____________________ process masters file ____________________ ";
-
-echo " **** Removing Masters file **** ";
-rm /usr/local/hadoop/etc/hadoop/masters;
+if test -f /usr/local/hadoop/etc/hadoop/masters;
+    then echo " **** Removing Masters file **** ";
+    rm /usr/local/hadoop/etc/hadoop/masters;
+fi
 echo " **** Creating Masters file **** ";
 touch /usr/local/hadoop/etc/hadoop/masters;
 echo "$ip_3$NN0" >> /usr/local/hadoop/etc/hadoop/masters;

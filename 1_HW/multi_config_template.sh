@@ -8,4 +8,3 @@ server_str="node"; # update me with your server, apt
 suffix_str=".hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us";
 # .apt.emulab.net
 # .hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us
-local_key_reset=0;

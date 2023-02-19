@@ -13,21 +13,7 @@ else
 fi
 
 
-# ____________________ copy remote NameNode key to local machine ____________________
 # __________ create local key directory & key comment file __________
-if test -d "./remote_key/";
-    then echo " **** local key directory already exists **** ";
-    if (( $local_key_reset == 1 )) ;
-        then echo " **** key reset enabled **** ";
-        rm -r -f ./remote_key/;
-        echo " **** re-making local key directory **** ";
-        mkdir -p remote_key/
-    fi
-else
-    echo " **** making local key directory **** ";
-    mkdir -p remote_key/
-fi
-
 if test -f "./comment.txt";
     then echo " **** comment file already exists **** ";
 else
@@ -36,22 +22,16 @@ else
     echo ' # **** default keys above this line **** ' >> comment.txt;
     echo " # **** keys after this appended by ubuntu_ssh_keys $(date) **** " >> comment.txt;
 fi
-# __________ create local key directory & key comment file __________
 
 
-# ____________________ The Keymaker ____________________
-if test -f "./remote_key/id_rsa.pub";
-    then echo " **** id_rsa.pub already exists **** ";
-else
-    echo " **** scp copy of remote NameNode to local machine **** ";
-    scp $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:/users/$user_str/.ssh/id_rsa.pub ./remote_key/
-    #scp LutzD00D@apt136.apt.emulab.net:/users/LutzD00D/.ssh/id_rsa.pub ./remote_key/
+if test -d "./remote_key/";
+    then echo " **** local key directory already exists **** ";
+        echo " **** removing local key directory **** ";
+        rm -r -f ./remote_key/;
 fi
+echo " **** making local key directory **** ";
+mkdir -p remote_key/
 
-
-echo " **** copy remote NameNode key from local machine to remote DataNodes **** "
-# https://stackoverflow.com/questions/23591083/how-to-append-authorized-keys-on-the-remote-server-with-id-rsa-pub-key
-# cat ~/.ssh/id_rsa.pub | (ssh user@host "cat >> ~/.ssh/authorized_keys")
 
 if test -f "./name_login_others.sh";
     then echo " **** removing old name_login_others file **** ";
@@ -59,35 +39,43 @@ if test -f "./name_login_others.sh";
 fi
 echo " **** making name_login_others.sh **** ";
 touch name_login_othersmment.sh;
+# __________ create local key directory & key comment file __________
 
+# send the NameNode a good read
+scp around_the_world.txt $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:~/around_the_world.txt
+
+# ____________________ The Keymaker ____________________
+if test -d "./remote_key/";
+    then echo " **** scp copy of remote NameNode id_rsa.pub to local machine **** ";
+    scp $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:/users/$user_str/.ssh/id_rsa.pub ./remote_key/
+    #scp LutzD00D@apt136.apt.emulab.net:/users/LutzD00D/.ssh/id_rsa.pub ./remote_key/
+else
+    echo " **** remote_key directory missing **** ";
+
+fi
+
+echo " **** copy remote NameNode key from local machine to remote DataNodes **** "
+# https://stackoverflow.com/questions/23591083/how-to-append-authorized-keys-on-the-remote-server-with-id-rsa-pub-key
+# cat ~/.ssh/id_rsa.pub | (ssh user@host "cat >> ~/.ssh/authorized_keys")
 
 if test -f "./remote_key/id_rsa.pub";
     then
     for ext_node_id in ${ext_node_id_ary[@]};
         do
-        # ext_node_id=${ext_node_id_ary[$ext_node_id_ary_pos]};
+        echo " **** sending NameNode publickey to node $ext_node_id **** ";
+        cat ./comment.txt | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
+        cat ./remote_key/id_rsa.pub | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
+        # cat ./comment.txt | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
+        # cat ./remote_key/id_rsa.pub | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
 
-        # if (( $ext_node_id_ary_pos > 0 )); # nodes other than 0
-            # then 
-            echo " **** sending NameNode publickey to node $ext_node_id **** ";
-            cat ./comment.txt | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
-            cat ./remote_key/id_rsa.pub | (ssh $user_str@$server_str$ext_node_id$suffix_str "cat >> ~/.ssh/authorized_keys");
-            # cat ./comment.txt | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
-            # cat ./remote_key/id_rsa.pub | (ssh LutzD00D@apt131.apt.emulab.net "cat >> ~/.ssh/authorized_keys");
-
-            echo " **** populating name_login_others.sh for node $ext_node_id **** " ;
-            echo "echo ssh -o StrictHostKeyChecking=no -t node$ext_node_id_ary_pos;" >> name_login_others.sh;
-        # else
-            # echo " **** skipping node $ext_node_id **** ";
-        # fi
+        echo " **** populating name_login_others.sh for node $ext_node_id **** " ;
+        echo "echo ssh -o StrictHostKeyChecking=no -t node$ext_node_id_ary_pos;" >> name_login_others.sh;
     done
 else
     echo " **** id_rsa.pub missing **** ";
 fi
 # ____________________ The Keymaker ____________________
 
-# send the nodes a good read
-scp around_the_world.txt $user_str@$server_str${ext_node_id_ary[0]}$suffix_str:~/around_the_world.txt
 
 # ____________________ Node0 (NameNode) initial login to DataNodes ____________________
 ssh -o StrictHostKeyChecking=no -t $user_str@$server_str${ext_node_id_ary[0]}$suffix_str < name_login_others.sh;
