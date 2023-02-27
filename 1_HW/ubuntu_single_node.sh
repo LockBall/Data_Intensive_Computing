@@ -178,11 +178,11 @@ else
     </property> \n \
     <property> \n \
         <name>dfs.namenode.name.dir</name> \n \
-        <value>file:///usr/local/hadoop/hdfs/data</value> \n \
+        <value>file:///mydata</value> \n \
     </property> \n \
     <property> \n \
         <name>dfs.datanode.data.dir</name> \n \
-        <value>file:///usr/local/hadoop/hdfs/data</value> \n \
+        <value>file:///mydata</value> \n \
     </property>
     ";
     sed -i "/$hdfs_search_for/a $hdfs_replace_with" /usr/local/hadoop/etc/hadoop/hdfs-site.xml;
