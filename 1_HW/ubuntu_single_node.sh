@@ -21,13 +21,18 @@ DN3="4";
 xml_modded="single_node";
 xml_reset=0;
 data_reset=0;
-clean_hadoop=0;
+clean_hadoop=1;
 
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
 
 echo -e " ____________________ connected to target ____________________ \n";
+
+# Change Permissions of /mydata
+sudo chown aroberge /mydata
+sudo chgrp dic-uml-s23-PG0 /mydata/
+sudo chmod 700 /mydata
 
 # ____________________ The Keymaker ____________________
 
@@ -160,6 +165,8 @@ else
 fi
 # ____________________ core-site.xml ____________________
 
+
+#        <value>file:///usr/local/hadoop/hdfs/data</value> \n \
 
 # ____________________ hdfs-site.xml ____________________
 if grep -q $xml_modded /usr/local/hadoop/etc/hadoop/hdfs-site.xml;

@@ -19,3 +19,33 @@ hadoop fs -get /tmp/out local_out
 
 #Output is at local_out/part-r-xxxx
 nano ~/local_out/part-r-00000 _SUCCESS
+
+##### HW 2 ######
+# Add permissions for /mydata
+# This was a permission issue when starting the nodes
+# Permission of data directory needs to be drwx aroberge dic-uml-s23-PG0 group
+sudo chown aroberge /mydata
+sudo chgrp dic-uml-s23-PG0 /mydata/
+sudo chmod 700 /mydata
+
+# Download the 50 gig benchmark
+wget ftp://ftp.ecn.purdue.edu/puma/wikipedia_50GB.tar.bz2
+# wget ftp://ftp.ecn.purdue.edu/puma/sort_30GB.tar.bz2
+mv wikipedia_50GB.tar.bz2 /mydata
+# Untar the 50 gig benchmark this takes a decent amount of time 
+tar xjf /mydata/wikipedia_50GB.tar.bz2 -C /mydata/
+
+# Place the 50 gig benchmark in the hadoop fs
+hadoop fs -put /mydata/wikipedia_50GB /
+# Generate the 30G Terasort dataset
+# Teragen generates 100 bytes per a record
+# We want 30GB of data so 300000000 records to generate 
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar teragen 300000000 /teragen
+
+# Run wordcount
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /wikipedia_50GB/* /wordcount_out
+
+# Run Grep 
+
+# Run terasort
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted
