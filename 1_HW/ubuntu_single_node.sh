@@ -20,7 +20,7 @@ DN3="4";
 
 xml_modded="single_node";
 xml_reset=0;
-data_reset=0;
+data_reset=1;
 clean_hadoop=1;
 
 # # namenode knows the data contains, what block it bleongs to 
@@ -30,8 +30,9 @@ clean_hadoop=1;
 echo -e " ____________________ connected to target ____________________ \n";
 
 # Change Permissions of /mydata
-sudo chown aroberge /mydata
-sudo chgrp dic-uml-s23-PG0 /mydata/
+# Permission of data directory needs to be drwx aroberge dic-uml-s23-PG0 group
+sudo chown -R $(id -u):$(id -g) /mydata
+#sudo chgrp dic-uml-s23-PG0 /mydata/
 sudo chmod 700 /mydata
 
 # ____________________ The Keymaker ____________________
@@ -137,6 +138,7 @@ export HADOOP_MAPRED_HOME=${HADOOP_HOME};
 export HADOOP_COMMON_HOME=${HADOOP_HOME};
 export HADOOP_HDFS_HOME=${HADOOP_HOME};
 export YARN_HOME=${HADOOP_HOME};
+export HADOOP_HEAPSIZE=30000;
 export PDSH_RCMD_TYPE=ssh;
 ' >> ~/.bashrc;
 fi
@@ -159,6 +161,10 @@ else
     <property> \n \
         <name>fs.defaultFS</name> \n \
         <value>hdfs://$ip_3$NN0:9000</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>hadoop.tmp.dir</name> \n \
+        <value>/mydata/tmp/hadoop-aroberge</value> \n \
     </property>
     ";
     sed -i "/$core_search_for/a $core_replace_with" /usr/local/hadoop/etc/hadoop/core-site.xml;
@@ -185,11 +191,15 @@ else
     </property> \n \
     <property> \n \
         <name>dfs.namenode.name.dir</name> \n \
-        <value>file:///mydata</value> \n \
+        <value>file:///mydata/data</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>nfs.dump.dir</name> \n \
+        <value>/mydata/tmp/.hdfs-nfs</value> \n \
     </property> \n \
     <property> \n \
         <name>dfs.datanode.data.dir</name> \n \
-        <value>file:///mydata</value> \n \
+        <value>file:///mydata/data</value> \n \
     </property>
     ";
     sed -i "/$hdfs_search_for/a $hdfs_replace_with" /usr/local/hadoop/etc/hadoop/hdfs-site.xml;
@@ -213,6 +223,10 @@ else
     <property> \n \
         <name>yarn.nodemanager.aux-services</name> \n \
         <value>mapreduce_shuffle</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>yarn.nodemanager.remote-app-log-dir</name> \n \
+        <value> /mydata/tmp/logs</value> \n \
     </property> \n \
     <property> \n \
         <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name> \n \
@@ -244,7 +258,15 @@ else
         <name>mapreduce.jobtracker.address</name> \n \
         <value>$ip_3$NN0:54311</value> \n \
     </property> \n \
-        <property> \n \
+    <property> \n \
+        <name>yarn.app.mapreduce.am.staging-dir</name> \n \
+        <value>/mydata/tmp/hadoop-yarn/staging</value> \n \
+    </property> \n \
+    <property>
+        <name>mapred.child.java.opts</name>
+        <value>-Xmx8192m</value>
+    </property>
+    <property> \n \
         <name>yarn.app.mapreduce.am.env</name> \n \
         <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
     </property> \n \
@@ -305,18 +327,18 @@ done
 echo -e "\n ____________________ process data dir ____________________ ";
 if (( $data_reset == 1 ));
     then echo " **** data reset enabled **** ";
-    sudo rm -r -f /usr/local/hadoop/hdfs/data;
+    sudo rm -r -f /mydata/data;
 else
     echo " **** data reset disabled **** ";
 fi
 
-if test -d "/usr/local/hadoop/hdfs/data";
+if test -d "/mydata/data";
     then echo " **** data folder already exists **** ";
 else
     echo " **** making data dir **** ";
-    mkdir -p /usr/local/hadoop/hdfs/data;
-    sudo chown -R $(id -u):$(id -g) /usr/local/hadoop/hdfs/data;
-    chmod 700 /usr/local/hadoop/hdfs/data;
+    mkdir -p /mydata/data;
+    sudo chown -R $(id -u):$(id -g) /mydata/data;
+    chmod 700 /mydata/data;
 fi
 # ____________________ data dir ____________________
 

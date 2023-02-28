@@ -49,3 +49,26 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 
 # Run terasort
 hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted
+
+
+
+# Order that stuff was done #
+# Moved the data directories to /mydata due to size constraints on local disk
+# Had to do a little permission fix for the /mydata directory to allow for hadoop to edit it
+# Set all the tmp directories for hadoop, yarn, mapred, hdfs to be in the /mydata directory due to local disk storage
+# Increased the Java memory heap size to 8Gigs from default due to failing terasort due to insufficiant heap size
+# Can probably go higher on the heap size it looked like the machines had 196GB 
+
+# Run Multi node
+# Run ssh_keys
+# format hdfs
+# get wikipidea tar
+# move wikipidea tar to /mydata
+# untar wikipedia (Takes a while)
+# add wikipedia to hadoop fs
+# Use teragen to generate 30GB of data
+# Run tests with above commands
+# Wordcount
+# Grep
+# Terasort (works)
+# TODO: Figure out a way to quiet hadoop INFO's when running commands
