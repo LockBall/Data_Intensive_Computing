@@ -279,6 +279,14 @@ else
         <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
     </property> \n \
     <property> \n \
+        <name>mapreduce.map.log.level</name> \n \
+        <value>WARN</value> \n \
+    </property> \n \
+    <property> \n \
+        <name>mapreduce.reduce.log.level</name> \n \
+        <value>WARN</value> \n \
+    </property> \n \
+    <property> \n \
         <name>mapreduce.framework.name</name> \n \
         <value>yarn</value> \n \
     </property>

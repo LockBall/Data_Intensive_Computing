@@ -44,9 +44,8 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 
 # Run wordcount
 hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /wikipedia_50GB/* /wordcount_out
-
 # Run Grep 
-
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep /wikipedia_50GB/ /grep_out anaconda
 # Run terasort
 hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted
 
@@ -58,6 +57,7 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # Set all the tmp directories for hadoop, yarn, mapred, hdfs to be in the /mydata directory due to local disk storage
 # Increased the Java memory heap size to 8Gigs from default due to failing terasort due to insufficiant heap size
 # Can probably go higher on the heap size it looked like the machines had 196GB 
+# Set mapreduc.map.log.level and  mapreduc.reduce.log.level to warn to quiet the logging and run faster
 
 # Run Multi node
 # Run ssh_keys
@@ -68,7 +68,10 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # add wikipedia to hadoop fs
 # Use teragen to generate 30GB of data
 # Run tests with above commands
-# Wordcount
-# Grep
+# Wordcount (works)
+# Grep (works)
 # Terasort (works)
 # TODO: Figure out a way to quiet hadoop INFO's when running commands
+
+# How to time commands
+# time -p <command>
