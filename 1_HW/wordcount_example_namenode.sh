@@ -66,6 +66,7 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # move wikipidea tar to /mydata
 # untar wikipedia (Takes a while)
 # add wikipedia to hadoop fs
+# start-all.sh ##Start Hadoop
 # Use teragen to generate 30GB of data
 # Run tests with above commands
 # Wordcount (works)
