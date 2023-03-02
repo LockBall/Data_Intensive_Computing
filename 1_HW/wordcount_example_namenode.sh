@@ -43,11 +43,11 @@ hadoop fs -put /mydata/wikipedia_50GB /
 hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar teragen 300000000 /teragen
 
 # Run wordcount
-hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /wikipedia_50GB/* /wordcount_out
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /wikipedia_50GB/* /wordcount_out 2>&1 | tee wordcount_benchmark.txt
 # Run Grep 
-hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep /wikipedia_50GB/ /grep_out anaconda
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep /wikipedia_50GB/ /grep_out anaconda 2>&1 | tee grep_benchmark.txt
 # Run terasort
-hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted 2>&1 | tee terasort_benchmark.txt
 
 
 
@@ -62,16 +62,26 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # Run Multi node
 # Run ssh_keys
 # format hdfs
+hdfs namenode -format;
 # get wikipidea tar
+wget ftp://ftp.ecn.purdue.edu/puma/wikipedia_50GB.tar.bz2
 # move wikipidea tar to /mydata
+mv wikipedia_50GB.tar.bz2 /mydata
 # untar wikipedia (Takes a while)
+tar xjf /mydata/wikipedia_50GB.tar.bz2 -C /mydata/
 # start-all.sh ##Start Hadoop
+start-all.sh
 # add wikipedia to hadoop fs
+hadoop fs -put /mydata/wikipedia_50GB /
 # Use teragen to generate 30GB of data
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar teragen 300000000 /teragen
 # Run tests with above commands
 # Wordcount (works)
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar wordcount /wikipedia_50GB/* /wordcount_out 2>&1 | tee wordcount_benchmark.txt
 # Grep (works)
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar grep /wikipedia_50GB/ /grep_out anaconda 2>&1 | tee grep_benchmark.txt
 # Terasort (works)
+hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.4.jar terasort /teragen /teragen_sorted 2>&1 | tee terasort_benchmark.txt
 # TODO: Figure out a way to quiet hadoop INFO's when running commands
 
 # How to time commands
