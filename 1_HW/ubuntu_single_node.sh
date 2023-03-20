@@ -23,7 +23,7 @@ xml_reset=0;
 data_reset=1;
 clean_hadoop=1;
 hadoop_version=3.2.3;
-
+rm_archive=0;
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
@@ -88,11 +88,24 @@ else
         then echo " file exists";
     else
         echo " file not found, downloading hadoop";
-        wget https://dlcdn.apache.org/hadoop/common/hadoop-$hadoop_version/hadoop-$hadoop_version.tar.gz;
+        wget https://www.apache.org/dyn/closer.lua/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
     fi
-    
+    if test -f "spark-3.2.3-bin-without-hadoop.tgz";
+        then echo " file exists";
+    else
+        echo " Spark file not found, downloading Spark";
+        wget https://dlcdn.apache.org/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
+    fi
+    if test -f "v7.1.1.zip";
+        then echo " file exists";
+    else
+        echo " HiBench file not found, downloading Hibench";
+        wget https://github.com/Intel-bigdata/HiBench/archive/refs/tags/v7.1.1.zip
+    fi
     echo " **** extracting & moving hadoop **** ";
     tar xvfz hadoop-$hadoop_version.tar.gz;
+    tar xvfz spark-3.2.3-bin-without-hadoop.tgz;
+    unzip v7.1.1.zip
     sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
 fi
 
