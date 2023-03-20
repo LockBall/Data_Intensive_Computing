@@ -77,7 +77,7 @@ if (( $clean_hadoop == 1 ));
         rm ~/.bashrc;
         if test -f "~/.cleanbashrc"; 
         then
-            mv ~/.cleanbashrc .bashrc;
+            mv ~/.cleanbashrc ~/.bashrc;
         fi
     else
     echo "\n **** leaving hadoop alone **** ";
