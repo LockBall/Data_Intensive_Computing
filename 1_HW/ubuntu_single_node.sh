@@ -22,6 +22,7 @@ xml_modded="single_node";
 xml_reset=0;
 data_reset=1;
 clean_hadoop=1;
+hadoop_version=3.2.3;
 
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
@@ -83,16 +84,16 @@ if test -d "/usr/local/hadoop";
     then echo " **** hadoop has already been extracted and moved **** ";
 else
     echo " /usr/local/hadoop folder missing";
-    if test -f "hadoop-3.3.4.tar.gz";
+    if test -f "hadoop-$hadoop_version.tar.gz";
         then echo " file exists";
     else
         echo " file not found, downloading hadoop";
-        wget https://dlcdn.apache.org/hadoop/common/hadoop-3.3.4/hadoop-3.3.4.tar.gz;
+        wget https://dlcdn.apache.org/hadoop/common/hadoop-$hadoop_version/hadoop-$hadoop_version.tar.gz;
     fi
     
     echo " **** extracting & moving hadoop **** ";
-    tar xvfz hadoop-3.3.4.tar.gz;
-    sudo mv hadoop-3.3.4 /usr/local/hadoop; # same same
+    tar xvfz hadoop-$hadoop_version.tar.gz;
+    sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
 fi
 
 # ____________________ BEGIN hadoop backup folder ____________________
