@@ -75,7 +75,10 @@ if (( $clean_hadoop == 1 ));
     then echo -e "\n **** Cleaning hadoop **** ";
         sudo rm -rd /usr/local/hadoop;
         rm ~/.bashrc;
-        mv ~/.cleanbashrc .bashrc;
+        if test -f "~/.cleanbashrc"; 
+        then
+            mv ~/.cleanbashrc .bashrc;
+        fi
     else
     echo "\n **** leaving hadoop alone **** ";
 fi

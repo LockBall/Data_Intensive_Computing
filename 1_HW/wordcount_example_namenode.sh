@@ -86,3 +86,9 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 
 # How to time commands
 # time -p <command>
+
+
+
+# HW3 #
+Changed Hadoop version to 3.2.3 to add compatability for hibench
+# Added downloading of Spark and Hibench #
