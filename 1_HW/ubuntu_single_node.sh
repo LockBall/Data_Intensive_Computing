@@ -76,10 +76,6 @@ if (( $clean_hadoop == 1 ));
         sudo rm -rd /usr/local/hadoop;
         sudo rm -rd /usr/local/spark;
         rm ~/.bashrc;
-        if test -f "~/.cleanbashrc"; 
-        then
-            mv ~/.cleanbashrc ~/.bashrc;
-        fi
     else
     echo "\n **** leaving hadoop alone **** ";
 fi
@@ -144,9 +140,6 @@ fi
 if grep -q hadoop ~/.bashrc;
     then echo -e " **** hadoop paths already in ~/.bashrc **** \n";
 else
-    echo -e " **** backing up ~/.bashrc **** ";
-    cp ~/.bashrc ~/.cleanbashrc
-
     echo " **** adding hadoop paths to ~/.bashrc **** \n"; # same same ↓↓
     echo -e '\n
 export HADOOP_HOME=/usr/local/hadoop;
