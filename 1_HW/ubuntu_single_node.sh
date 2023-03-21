@@ -372,8 +372,8 @@ sudo cp /usr/local/spark/conf/spark-defaults.conf.template /usr/local/spark/conf
 sudo cp /usr/local/spark/conf/workers.template /usr/local/spark/conf/workers
 sudo chmod +x /usr/local/spark/conf/spark-env.sh 
 
-echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee /usr/local/spark/conf/spark-env.sh
-echo "export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee /usr/local/spark/conf/spark-env.sh 
+echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee -a /usr/local/spark/conf/spark-env.sh
+echo "export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee -a /usr/local/spark/conf/spark-env.sh 
 # ____________________ Spark Configuration ____________________
 
 
