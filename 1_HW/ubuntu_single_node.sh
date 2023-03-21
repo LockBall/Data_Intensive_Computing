@@ -74,6 +74,7 @@ echo -e "\n ____________________ hadoop ____________________ ";
 if (( $clean_hadoop == 1 ));
     then echo -e "\n **** Cleaning hadoop **** ";
         sudo rm -rd /usr/local/hadoop;
+        sudo rm -rd /usr/local/spark;
         rm ~/.bashrc;
         if test -f "~/.cleanbashrc"; 
         then
@@ -91,7 +92,7 @@ else
         then echo " file exists";
     else
         echo " file not found, downloading hadoop";
-        wget https://www.apache.org/dyn/closer.lua/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
+        wget https://archive.apache.org/dist/hadoop/common/hadoop-$hadoop_version/hadoop-$hadoop_version.tar.gz
     fi
     if test -f "spark-3.2.3-bin-without-hadoop.tgz";
         then echo " file exists";
@@ -108,6 +109,7 @@ else
     echo " **** extracting & moving hadoop **** ";
     tar xvfz hadoop-$hadoop_version.tar.gz;
     tar xvfz spark-3.2.3-bin-without-hadoop.tgz;
+    sudo mv spark-3.2.3-bin-without-hadoop /usr/local/spark
     unzip v7.1.1.zip
     sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
 fi
@@ -148,6 +150,7 @@ else
     echo " **** adding hadoop paths to ~/.bashrc **** \n"; # same same ↓↓
     echo -e '\n
 export HADOOP_HOME=/usr/local/hadoop;
+export SPARK_HOME=/usr/local/spark;
 export PATH=$PATH:$HADOOP_HOME/bin;
 export PATH=$PATH:$HADOOP_HOME/sbin;
 export PATH=$PATH:$HADOOP_HOME/sbin;
@@ -366,6 +369,20 @@ else
     chmod 700 /mydata/data;
 fi
 # ____________________ data dir ____________________
+
+
+# ____________________ Spark Configuration ____________________
+echo "Configuring SPARK"
+## Copy Configuration files ##
+sudo cp /usr/local/spark/conf/spark-env.sh.template  /usr/local/spark/conf/spark-env.sh 
+sudo cp /usr/local/spark/conf/spark-defaults.conf.template /usr/local/spark/conf/spark-defaults.conf
+sudo cp /usr/local/spark/conf/workers.template /usr/local/spark/conf/workers
+sudo chmod +x /usr/local/spark/conf/spark-env.sh 
+
+sudo echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/ \r\n" >> /usr/local/spark/conf/spark-env.sh
+sudo echo "export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop/ \r\n" >> /usr/local/spark/conf/spark-env.sh 
+# ____________________ Spark Configuration ____________________
+
 
 
 $SHELL
