@@ -92,3 +92,8 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # HW3 #
 Changed Hadoop version to 3.2.3 to add compatability for hibench
 # Added downloading of Spark and Hibench #
+
+
+/usr/local/spark/bin/spark-submit --deploy-mode cluster \
+               --class org.apache.spark.examples.SparkPi \
+               $SPARK_HOME/examples/jars/spark-examples_2.11-2.2.0.jar 10

@@ -75,6 +75,7 @@ if (( $clean_hadoop == 1 ));
     then echo -e "\n **** Cleaning hadoop **** ";
         sudo rm -rd /usr/local/hadoop;
         sudo rm -rd /usr/local/spark;
+        sudo rm -rd ~/HiBench
         rm ~/.bashrc;
     else
     echo "\n **** leaving hadoop alone **** ";
@@ -108,6 +109,7 @@ else
     sudo mv spark-3.2.3-bin-without-hadoop /usr/local/spark
     unzip -u v7.1.1.zip;
     sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
+    mv HiBench-7.1.1 HiBench
 fi
 
 # ____________________ BEGIN hadoop backup folder ____________________
@@ -378,6 +380,14 @@ echo "export SPARK_DIST_CLASSPATH=$(hadoop classpath)" | sudo tee -a /usr/local/
 echo "spark.master yarn" | sudo tee -a /usr/local/spark/conf/spark-defaults.conf 
 # ____________________ Spark Configuration ____________________
 
+# ____________________ Hibench Configuration ____________________
+echo "Configuring Hibench"
+cp ~/HiBench/conf/hadoop.conf.template ~/HiBench/conf/hadoop.conf
+sed -i 's/\/PATH\/TO\/YOUR\/HADOOP\/ROOT/\/usr\/local\/hadoop/g' ~/HiBench/conf/hadoop.conf
 
+cp ~/HiBench/conf/spark.conf.template ~/HiBench/conf/spark.conf
+sed -i 's/\/PATH\/TO\/YOUR\/SPARK\/HOME/\/usr\/local\/spark/g' ~/HiBench/conf/spark.conf
+
+# ____________________ Spark Configuration ____________________
 
 $SHELL
