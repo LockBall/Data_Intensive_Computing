@@ -374,6 +374,8 @@ sudo chmod +x /usr/local/spark/conf/spark-env.sh
 
 echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee -a /usr/local/spark/conf/spark-env.sh
 echo "export YARN_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee -a /usr/local/spark/conf/spark-env.sh 
+echo "export SPARK_DIST_CLASSPATH=$(hadoop classpath)" | sudo tee -a /usr/local/spark/conf/spark-env.sh 
+echo "spark.master yarn" | sudo tee -a /usr/local/spark/conf/spark-defaults.conf 
 # ____________________ Spark Configuration ____________________
 
 
