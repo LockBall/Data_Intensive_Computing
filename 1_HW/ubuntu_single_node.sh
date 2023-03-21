@@ -110,7 +110,7 @@ else
     tar xvfz hadoop-$hadoop_version.tar.gz;
     tar xvfz spark-3.2.3-bin-without-hadoop.tgz;
     sudo mv spark-3.2.3-bin-without-hadoop /usr/local/spark
-    unzip v7.1.1.zip
+    unzip -u v7.1.1.zip;
     sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
 fi
 
