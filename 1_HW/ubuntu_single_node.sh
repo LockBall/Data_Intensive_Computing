@@ -23,6 +23,7 @@ xml_reset=0;
 data_reset=1;
 clean_hadoop=1;
 hadoop_version=3.2.3;
+spark_version=3.0.0;
 rm_archive=0;
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
@@ -63,9 +64,12 @@ sudo apt-get upgrade -y;
 echo -e "\n **** ssh & pdsh **** \n";
 sudo apt-get install -y ssh;
 sudo apt-get install -y pdsh;
-
+echo -e "\n **** maven **** ";
+sudo apt-get install -y maven;
 echo -e "\n **** java **** ";
 sudo apt install -y default-jdk;
+# echo -e "\n **** scala **** ";
+# sudo apt-get install -y scala;
 java -version;
 
 
@@ -95,7 +99,7 @@ else
         then echo " file exists";
     else
         echo " Spark file not found, downloading Spark";
-        wget https://dlcdn.apache.org/spark/spark-3.2.3/spark-3.2.3-bin-without-hadoop.tgz
+        wget https://archive.apache.org/dist/spark/spark-$spark_version/spark-$spark_version-bin-without-hadoop.tgz
     fi
     if test -f "v7.1.1.zip";
         then echo " file exists";
@@ -103,10 +107,17 @@ else
         echo " HiBench file not found, downloading Hibench";
         wget https://github.com/Intel-bigdata/HiBench/archive/refs/tags/v7.1.1.zip
     fi
+    # if test -f "scala-2.11.0.deb";
+    #     then echo " file exists";
+    # else
+    #     echo " HiBench file not found, downloading Hibench";
+    #     wget https://downloads.lightbend.com/scala/2.11.0/scala-2.11.0.deb
+    #     sudo dpkg -i scala-2.11.0.deb
+    # fi
     echo " **** extracting & moving hadoop **** ";
     tar xvfz hadoop-$hadoop_version.tar.gz;
-    tar xvfz spark-3.2.3-bin-without-hadoop.tgz;
-    sudo mv spark-3.2.3-bin-without-hadoop /usr/local/spark
+    tar xvfz spark-$spark_version-bin-without-hadoop.tgz;
+    sudo mv spark-$spark_version-bin-without-hadoop /usr/local/spark
     unzip -u v7.1.1.zip;
     sudo mv hadoop-$hadoop_version /usr/local/hadoop; # same same
     mv HiBench-7.1.1 HiBench
@@ -371,7 +382,7 @@ echo "Configuring SPARK"
 ## Copy Configuration files ##
 sudo cp /usr/local/spark/conf/spark-env.sh.template  /usr/local/spark/conf/spark-env.sh 
 sudo cp /usr/local/spark/conf/spark-defaults.conf.template /usr/local/spark/conf/spark-defaults.conf
-sudo cp /usr/local/spark/conf/workers.template /usr/local/spark/conf/workers
+sudo cp /usr/local/spark/conf/slaves.template /usr/local/spark/conf/slaves
 sudo chmod +x /usr/local/spark/conf/spark-env.sh 
 
 echo "export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/" | sudo tee -a /usr/local/spark/conf/spark-env.sh
@@ -389,5 +400,13 @@ cp ~/HiBench/conf/spark.conf.template ~/HiBench/conf/spark.conf
 sed -i 's/\/PATH\/TO\/YOUR\/SPARK\/HOME/\/usr\/local\/spark/g' ~/HiBench/conf/spark.conf
 
 # ____________________ Spark Configuration ____________________
+
+
+# Compile HiBench #
+sudo apt-get install -y openjdk-8-jdk
+sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+cd HiBench
+mvn -Psparkbench clean package
+cd 
 
 $SHELL

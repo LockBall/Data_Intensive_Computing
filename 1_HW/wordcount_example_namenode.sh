@@ -87,13 +87,26 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # How to time commands
 # time -p <command>
 
-
+wget https://dlcdn.apache.org/spark/spark-3.0.2/spark-3.0.2-bin-without-hadoop.tgz
+wget https://archive.apache.org/dist/spark/spark-$spark_version/spark-$spark_version-bin-without-hadoop.tgz
 
 # HW3 #
 Changed Hadoop version to 3.2.3 to add compatability for hibench
 # Added downloading of Spark and Hibench #
 
-
+# Example to test spark configuration #
 /usr/local/spark/bin/spark-submit --deploy-mode cluster \
                --class org.apache.spark.examples.SparkPi \
-               $SPARK_HOME/examples/jars/spark-examples_2.11-2.2.0.jar 10
+               $SPARK_HOME/examples/jars/spark-examples_2.12-3.0.0.jar 10
+
+# build hibench sparkbench #
+cd HiBench/autogen
+# mvn -Phadoopbench -Psparkbench -Dspark=3.0 -Dscala=2.11 clean package
+
+ mvn -Phadoopbench -Psparkbench -Dspark=3.0 -Dscala=2.12 clean package
+  mvn -Dspark=3.0 -Dscala=2.11 clean package
+
+# Build sparkbench works
+sudo apt-get install -y openjdk-8-jdk
+sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+mvn -Psparkbench clean package
