@@ -22,7 +22,7 @@ xml_modded="single_node";
 xml_reset=0;
 data_reset=1;
 clean_hadoop=1;
-hadoop_version=3.0.0;
+hadoop_version=2.7.3;
 spark_version=2.4.8;
 rm_archive=0;
 # # namenode knows the data contains, what block it bleongs to 
@@ -168,10 +168,10 @@ export HADOOP_HDFS_HOME=${HADOOP_HOME};
 export YARN_HOME=${HADOOP_HOME};
 export HADOOP_HEAPSIZE=30000;
 export PDSH_RCMD_TYPE=ssh;
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64;
 ' >> ~/.bashrc;
 fi
 source ~/.bashrc;
-# export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # ____________________ END add hadoop paths to ~/.bashrc ____________________
 
@@ -256,7 +256,7 @@ else
     </property> \n \
     <property> \n \
         <name>yarn.nodemanager.vmem-pmem-ratio</name> \n \
-        <value>5</value> \n \
+        <value>30</value> \n \
     </property> \n \
     <property> \n \
         <name>yarn.nodemanager.remote-app-log-dir</name> \n \
@@ -277,6 +277,7 @@ fi
 
 # ____________________ mapred-site.xml ____________________
 # only required on NameNode, will not harm datanodes
+cp /usr/local/hadoop/etc/hadoop/mapred-site.xml.template /usr/local/hadoop/etc/hadoop/mapred-site.xml
 if grep -q $xml_modded /usr/local/hadoop/etc/hadoop/mapred-site.xml;
     then echo -e " **** mapred-site.xml already modified **** ";
 else
@@ -362,7 +363,7 @@ touch /usr/local/hadoop/etc/hadoop/workers;
 for data_node_id in ${DataNodes_id_ary[@]};
     do echo "$ip_3$data_node_id" >> /usr/local/hadoop/etc/hadoop/workers;
 done
-# cp /usr/local/hadoop/etc/hadoop/workers /usr/local/hadoop/etc/hadoop/slaves
+cp /usr/local/hadoop/etc/hadoop/workers /usr/local/hadoop/etc/hadoop/slaves
 # ____________________ workers file ____________________
 
 
@@ -416,10 +417,10 @@ sed -i 's/yarn-client/yarn/g' ~/HiBench/conf/spark.conf
 # Compile HiBench #
 sudo apt-get install -y openjdk-8-jdk
 sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
-# sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
 
 cd HiBench
-mvn -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
+mvn -Psparkbench -Dhadoop=2.7 -Dspark=2.4 -Dscala=2.11 clean package
 cd 
 
 $SHELL
