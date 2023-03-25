@@ -63,7 +63,6 @@ hadoop jar /usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.
 # Run ssh_keys
 # format hdfs
 hdfs namenode -format;
-# get wikipidea tar
 wget ftp://ftp.ecn.purdue.edu/puma/wikipedia_50GB.tar.bz2
 # move wikipidea tar to /mydata
 mv wikipedia_50GB.tar.bz2 /mydata
@@ -110,3 +109,15 @@ cd HiBench/autogen
 sudo apt-get install -y openjdk-8-jdk
 sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
 mvn -Psparkbench clean package
+# Run workload
+ HiBench/bin/workloads/micro/wordcount/prepare/prepare.sh ~/temp.txt
+ HiBench/bin/workloads/micro/wordcount/spark/run.sh 
+
+
+## Spark Bench workloads are listed in Hibench/conf/benchmarks.lst
+## Can be run with 
+HiBench/bin/run_all.sh
+
+## Errors with 
+# hadoop.hdfs.web.hftpfilesystem
+#sql aggregation

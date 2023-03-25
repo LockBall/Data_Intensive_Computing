@@ -22,8 +22,8 @@ xml_modded="single_node";
 xml_reset=0;
 data_reset=1;
 clean_hadoop=1;
-hadoop_version=3.2.3;
-spark_version=3.0.0;
+hadoop_version=3.0.0;
+spark_version=2.4.8;
 rm_archive=0;
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
@@ -68,6 +68,8 @@ echo -e "\n **** maven **** ";
 sudo apt-get install -y maven;
 echo -e "\n **** java **** ";
 sudo apt install -y default-jdk;
+sudo apt-get install -y python2;
+
 # echo -e "\n **** scala **** ";
 # sudo apt-get install -y scala;
 java -version;
@@ -95,7 +97,7 @@ else
         echo " file not found, downloading hadoop";
         wget https://archive.apache.org/dist/hadoop/common/hadoop-$hadoop_version/hadoop-$hadoop_version.tar.gz
     fi
-    if test -f "spark-3.2.3-bin-without-hadoop.tgz";
+    if test -f "spark-$spark_version-bin-without-hadoop.tgz";
         then echo " file exists";
     else
         echo " Spark file not found, downloading Spark";
@@ -169,6 +171,8 @@ export PDSH_RCMD_TYPE=ssh;
 ' >> ~/.bashrc;
 fi
 source ~/.bashrc;
+# export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
 # ____________________ END add hadoop paths to ~/.bashrc ____________________
 
 
@@ -251,6 +255,10 @@ else
         <value>mapreduce_shuffle</value> \n \
     </property> \n \
     <property> \n \
+        <name>yarn.nodemanager.vmem-pmem-ratio</name> \n \
+        <value>5</value> \n \
+    </property> \n \
+    <property> \n \
         <name>yarn.nodemanager.remote-app-log-dir</name> \n \
         <value> /mydata/tmp/logs</value> \n \
     </property> \n \
@@ -290,7 +298,7 @@ else
     </property> \n \
     <property>
         <name>mapred.child.java.opts</name>
-        <value>-Xmx8192m</value>
+        <value>-Xmx16384m</value>
     </property>
     <property> \n \
         <name>yarn.app.mapreduce.am.env</name> \n \
@@ -354,6 +362,7 @@ touch /usr/local/hadoop/etc/hadoop/workers;
 for data_node_id in ${DataNodes_id_ary[@]};
     do echo "$ip_3$data_node_id" >> /usr/local/hadoop/etc/hadoop/workers;
 done
+# cp /usr/local/hadoop/etc/hadoop/workers /usr/local/hadoop/etc/hadoop/slaves
 # ____________________ workers file ____________________
 
 
@@ -395,9 +404,11 @@ echo "spark.master yarn" | sudo tee -a /usr/local/spark/conf/spark-defaults.conf
 echo "Configuring Hibench"
 cp ~/HiBench/conf/hadoop.conf.template ~/HiBench/conf/hadoop.conf
 sed -i 's/\/PATH\/TO\/YOUR\/HADOOP\/ROOT/\/usr\/local\/hadoop/g' ~/HiBench/conf/hadoop.conf
+sed -i 's/hdfs\:\/\/localhost\:8020/hdfs\:\/\/\/mydata\/data/g' ~/HiBench/conf/hadoop.conf
 
 cp ~/HiBench/conf/spark.conf.template ~/HiBench/conf/spark.conf
 sed -i 's/\/PATH\/TO\/YOUR\/SPARK\/HOME/\/usr\/local\/spark/g' ~/HiBench/conf/spark.conf
+sed -i 's/yarn-client/yarn/g' ~/HiBench/conf/spark.conf
 
 # ____________________ Spark Configuration ____________________
 
@@ -405,8 +416,10 @@ sed -i 's/\/PATH\/TO\/YOUR\/SPARK\/HOME/\/usr\/local\/spark/g' ~/HiBench/conf/sp
 # Compile HiBench #
 sudo apt-get install -y openjdk-8-jdk
 sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java
+# sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
+
 cd HiBench
-mvn -Psparkbench clean package
+mvn -Psparkbench -Dspark=2.4 -Dscala=2.11 clean package
 cd 
 
 $SHELL
