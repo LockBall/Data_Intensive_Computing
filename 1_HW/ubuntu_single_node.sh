@@ -297,10 +297,10 @@ else
         <name>yarn.app.mapreduce.am.staging-dir</name> \n \
         <value>/mydata/tmp/hadoop-yarn/staging</value> \n \
     </property> \n \
-    <property>
-        <name>mapred.child.java.opts</name>
-        <value>-Xmx16384m</value>
-    </property>
+    <property> \n \
+        <name>mapred.child.java.opts</name> \n \
+        <value>-Xmx16384m</value> \n \
+    </property> \n \
     <property> \n \
         <name>yarn.app.mapreduce.am.env</name> \n \
         <value>HADOOP_MAPRED_HOME=/usr/local/hadoop/</value> \n \
@@ -324,7 +324,7 @@ else
     <property> \n \
         <name>mapreduce.framework.name</name> \n \
         <value>yarn</value> \n \
-    </property>
+    </property> 
     ";
     sed -i "/$mapred_search_for/a $mapred_replace_with" /usr/local/hadoop/etc/hadoop/mapred-site.xml;
 fi
