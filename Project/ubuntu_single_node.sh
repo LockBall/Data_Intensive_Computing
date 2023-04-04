@@ -30,6 +30,8 @@ rm_archive=0;
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
 
+PromCeph=1;
+
 echo -e " ____________________ connected to target ____________________ \n";
 
 # Change Permissions of /mydata
@@ -75,6 +77,11 @@ sudo apt-get install -y python2;
 # sudo apt-get install -y scala;
 java -version;
 
+your_github_username=LockBall;
+your_github_email=johnplutz@gmail.com;
+git config --global user.name $your_github_username;
+git config --global user.email $your_github_email;
+
 
 # ____________________ data dir ____________________
 echo -e "\n ____________________ process data dir ____________________ ";
@@ -95,6 +102,20 @@ else
 fi
 # ____________________ data dir ____________________
 
+
+if (( $PromCeph == 1 ));
+    then echo -e "\n ____________________ PromCeph ____________________ ";
+    
+    # mk directory for repo and clone it
+    sudo mkdir -p /usr/local/promceph;
+    sudo chmod 777 /usr/local/promceph;
+    cd /usr/local/promceph;
+    git clone https://github.com/swson/promceph;
+    source /usr/local/promceph/run-prombench-base.sh
+
+else
+    echo -e "\n ____________________ Skipping PromCeph ____________________ ";
+fi
 
 
 if (( $install_hadoop == 1 ));
