@@ -7,7 +7,9 @@ DN1="2";
 DN2="3";
 DN3="4";
 
-clean_hadoop=0
+install_hadoop=0;
+clean_hadoop=0;
+
 xml_modded="single_node";
 xml_reset=0;
 masters_reset=0;
