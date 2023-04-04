@@ -21,6 +21,7 @@ DN3="4";
 xml_modded="single_node";
 xml_reset=0;
 data_reset=1;
+install_hadoop=0; # 0 skips hadoop
 clean_hadoop=1;
 hadoop_version=2.7.3;
 spark_version=2.4.8;
@@ -97,7 +98,7 @@ fi
 
 
 if (( $install_hadoop == 1 ));
-    echo -e "\n ____________________ hadoop ____________________ ";
+    then echo -e "\n ____________________ hadoop ____________________ ";
 
     if (( $clean_hadoop == 1 ));
         then echo -e "\n **** Cleaning hadoop **** ";
