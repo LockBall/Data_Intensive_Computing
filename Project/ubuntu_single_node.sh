@@ -31,6 +31,7 @@ rm_archive=0;
 # # write and read. Data nodes talk to the name nodes to know what to do
 
 PromCeph=1;
+PromCeph_reset=0;
 
 echo -e " ____________________ connected to target ____________________ \n";
 
@@ -77,10 +78,28 @@ sudo apt-get install -y python2;
 # sudo apt-get install -y scala;
 java -version;
 
-your_github_username=LockBall;
-your_github_email=johnplutz@gmail.com;
-git config --global user.name $your_github_username;
-git config --global user.email $your_github_email;
+
+# ____________________ PromCeph ____________________
+if (( $PromCeph == 1 ));
+    then echo -e "\n ____________________ PromCeph ____________________ ";
+
+    if  (( $PromCeph_reset == 1 ));
+        then  echo -e "\n ____________________ deleting PromCeph folder ____________________ ";
+        sudo rm -r -f //usr/local/promceph-main;
+    else
+        echo -e "\n ____________________ reset PromCeph disabled ____________________ ";
+    fi
+    
+    # mk directory for repo
+    sudo mkdir -p /usr/local/promceph/;
+    sudo chmod 777 /usr/local/promceph/;
+    #source /usr/local/promceph/run-prombench-base.sh
+
+else
+
+    echo -e "\n ____________________ Skipping PromCeph ____________________ ";
+fi
+# ____________________ PromCeph ____________________
 
 
 # ____________________ data dir ____________________
@@ -101,21 +120,6 @@ else
     chmod 700 /mydata/data;
 fi
 # ____________________ data dir ____________________
-
-
-if (( $PromCeph == 1 ));
-    then echo -e "\n ____________________ PromCeph ____________________ ";
-    
-    # mk directory for repo and clone it
-    sudo mkdir -p /usr/local/promceph;
-    sudo chmod 777 /usr/local/promceph;
-    cd /usr/local/promceph;
-    git clone https://github.com/swson/promceph;
-    source /usr/local/promceph/run-prombench-base.sh
-
-else
-    echo -e "\n ____________________ Skipping PromCeph ____________________ ";
-fi
 
 
 if (( $install_hadoop == 1 ));
