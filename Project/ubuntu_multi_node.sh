@@ -33,17 +33,53 @@ else
     shell_cmd="gnome-terminal --command ";
 fi
 
-
+# generate per-node setup script files
 for ext_node_id in ${ext_node_id_ary[@]};
     do
-    echo " **** processing commands for node $ext_node_id **** ";
+    echo " **** generating setup script file for node $ext_node_id **** ";
     echo "# $current_date" > $ext_node_id.sh;
     final_cmd_str="$cmd_str$user_str@$server_str$ext_node_id$suffix_str$script_str";
     echo -e "generated:    $final_cmd_str \n";
     echo "$final_cmd_str;" >> $ext_node_id.sh;
-    echo "echo finished setting up node $ext_node_id;" >> $ext_node_id.sh;
     echo "echo ssh -o StrictHostKeyChecking=no -t $user_str@$server_str$ext_node_id$suffix_str;" >> $ext_node_id.sh;
+    echo "echo finished setting up node $ext_node_id;" >> $ext_node_id.sh;
     echo '$SHELL' >> $ext_node_id.sh;
     chmod +x $ext_node_id.sh;
     $shell_cmd "$directory/$ext_node_id.sh" & # & with no ; to run in background
 done
+
+
+# ____________________ PromCeph ____________________
+    promceph_single_node_str="promceph_single_node";
+    #generates single file to be sent to all nodes
+
+    echo -e "\n ____________________ PromCeph ____________________ ";
+
+    # generate file to be executed through ssh on nodes
+    echo " **** generating token auth git clone file **** ";
+    echo "# $current_date" > $promceph_single_node_str.sh;
+
+    if  (( $promceph_reset == 1 ));
+        then  echo "echo -e \n ____________________ deleting PromCeph folder ____________________ ;" >> $promceph_single_node_str.sh;
+        echo "sudo rm -r -f //usr/local/promceph;" >> $promceph_single_node_str.sh;
+    else
+        echo "echo -e \n ____________________ reset PromCeph disabled ____________________ ;" >> $promceph_single_node_str.sh;
+    fi
+    #echo "sudo mkdir -p /usr/local/promceph/;" >> $promceph_single_node_str.sh;
+    echo "sudo chmod 777 /usr/local/;" >> $promceph_single_node_str.sh;
+    echo "cd /usr/local/;" >> $promceph_single_node_str.sh;
+    echo "git clone https://oauth2:$git_access_token@github.com/swson/promceph.git;" >> $promceph_single_node_str.sh; 
+    echo '$SHELL' >> $promceph_single_node_str.sh;
+    #echo "source /usr/local/promceph/run-prombench-base.sh";
+
+    # generate per-node promceph files
+for ext_node_id in ${ext_node_id_ary[@]};
+    do
+    echo " **** generating per-node promceph file for node $ext_node_id **** ";
+    echo "# $current_date" > $ext_node_id$repo_name.sh
+    promceph_cmd_str="$cmd_str$user_str@$server_str$ext_node_id$suffix_str < $promceph_single_node_str.sh";
+    echo "$promceph_cmd_str;" >> $ext_node_id$repo_name.sh;
+    echo "echo finished setting up node $ext_node_id;" >> $ext_node_id$repo_name.sh;
+    chmod +x $ext_node_id$repo_name.sh;
+done
+# ____________________ PromCeph ____________________

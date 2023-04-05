@@ -8,3 +8,7 @@ server_str="node"; # update me with your server, apt
 suffix_str=".hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us";
 # .apt.emulab.net
 # .hw1node4.dic-uml-s23-pg0.wisc.cloudlab.us
+
+promceph_reset=0;
+repo_name="promceph";
+git_access_token="";

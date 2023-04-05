@@ -8,6 +8,10 @@
 
 # # https://www.geeksforgeeks.org/bash-scripting-how-to-check-if-file-exists/
 
+# this file is piped to a remote machine and executed remotely
+# it is static once it is called
+
+
 current_date=$(date);
 echo "running ubuntu_single_node.sh $current_date";
 
@@ -26,7 +30,7 @@ clean_hadoop=1;
 hadoop_version=2.7.3;
 spark_version=2.4.8;
 rm_archive=0;
-# # namenode knows the data contains, what block it bleongs to 
+# # namenode knows the data contains, what block it belongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
 
@@ -77,29 +81,6 @@ sudo apt-get install -y python2;
 # echo -e "\n **** scala **** ";
 # sudo apt-get install -y scala;
 java -version;
-
-
-# ____________________ PromCeph ____________________
-if (( $PromCeph == 1 ));
-    then echo -e "\n ____________________ PromCeph ____________________ ";
-
-    if  (( $PromCeph_reset == 1 ));
-        then  echo -e "\n ____________________ deleting PromCeph folder ____________________ ";
-        sudo rm -r -f //usr/local/promceph-main;
-    else
-        echo -e "\n ____________________ reset PromCeph disabled ____________________ ";
-    fi
-    
-    # mk directory for repo
-    sudo mkdir -p /usr/local/promceph/;
-    sudo chmod 777 /usr/local/promceph/;
-    #source /usr/local/promceph/run-prombench-base.sh
-
-else
-
-    echo -e "\n ____________________ Skipping PromCeph ____________________ ";
-fi
-# ____________________ PromCeph ____________________
 
 
 # ____________________ data dir ____________________
