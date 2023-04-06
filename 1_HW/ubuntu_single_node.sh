@@ -25,6 +25,7 @@ clean_hadoop=1;
 hadoop_version=2.7.3;
 spark_version=2.4.8;
 rm_archive=0;
+do_hadoop=0;
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
@@ -54,7 +55,8 @@ else
 fi
 # ____________________ The Keymaker ____________________
 
-
+if $do_hadoop == 1;
+then
 echo -e " ____________________ installing ____________________ ";
 
 echo -e "\n **** updating & upgrading **** " ;
@@ -422,5 +424,5 @@ sudo update-alternatives --set javac /usr/lib/jvm/java-8-openjdk-amd64/bin/javac
 cd HiBench
 mvn -Psparkbench -Dhadoop=2.7 -Dspark=2.4 -Dscala=2.11 clean package
 cd 
-
+fi
 $SHELL
