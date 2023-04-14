@@ -26,6 +26,8 @@ hadoop_version=2.7.3;
 spark_version=2.4.8;
 rm_archive=0;
 do_hadoop=0;
+do_tsdb=0;
+
 # # namenode knows the data contains, what block it bleongs to 
 # # and where it goes. Namenode also controls when someone can 
 # # write and read. Data nodes talk to the name nodes to know what to do
@@ -54,6 +56,26 @@ else
     # https://stackoverflow.com/questions/43235179/how-to-execute-ssh-keygen-without-prompt
 fi
 # ____________________ The Keymaker ____________________
+
+if $do_tsdb == 1;
+then
+ echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
+ echo 'export PATH=$PATH:/users/$USER/go/bin' >> ~/.profile
+ echo 'export GOPATH=/usr/local/go/bin' >> ~/.profile
+ sudo sed -i 's/\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:\/snap\/bin/\/usr\/local\/sbin:\/usr\/local\/bin:\/usr\/sbin:\/usr\/bin:\/sbin:\/bin:\/snap\/bin:\/usr\/local\/go\/bin/g' /etc/sudoers
+ . ~/.profile
+ echo "Installing Go\r\n"
+ sudo rm -rf /usr/local/go
+ wget -c https://go.dev/dl/go1.16.15.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local
+
+ export PATH=$PATH:/usr/local/go/bin
+ echo "Getting and Making tsbs\r\n"
+ sudo go get github.com/timescale/tsbs
+ cd /usr/local/go/bin/pkg/mod/github.com/timescale/tsbs@v0.0.0-20220119183622-bcc00137d72d/
+ sudo make
+ echo "Generating data\r\n"
+
+fi
 
 if $do_hadoop == 1;
 then
