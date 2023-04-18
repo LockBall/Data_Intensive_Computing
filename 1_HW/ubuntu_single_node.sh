@@ -59,6 +59,32 @@ fi
 
 if $do_tsdb == 1;
 then
+ echo "Installing Timescaledb\r\n"
+ sudo apt update -y
+ sudo apt install -y gnupg postgresql-common apt-transport-https lsb-release wget
+ sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+ sudo echo "deb https://packagecloud.io/timescale/timescaledb/ubuntu/ $(lsb_release -c -s) main" | sudo tee /etc/apt/sources.list.d/timescaledb.list
+ wget --quiet -O - https://packagecloud.io/timescale/timescaledb/gpgkey | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/timescaledb.gpg
+ #wget --quiet -O - https://packagecloud.io/timescale/timescaledb/gpgkey | sudo apt-key add -
+ sudo apt update
+ sudo apt install -y timescaledb-2-postgresql-14
+
+ sudo timescaledb-tune -yes
+
+ sudo apt-get install -y postgresql-client
+
+ sudo systemctl restart postgresql
+ sudo -u postgres psql
+ \password postgres
+ psql -U postgres -h localhost
+ CREATE database tsdb;
+ \c tsdb
+ CREATE EXTENSION IF NOT EXISTS timescaledb;
+ psql -U postgres -h localhost -d tsdb
+
+
+ ####### Installing TSBS #####
+ sudo chmod -R 777 /mydata/
  echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.profile
  echo 'export PATH=$PATH:/users/$USER/go/bin' >> ~/.profile
  echo 'export GOPATH=/usr/local/go/bin' >> ~/.profile
@@ -74,7 +100,46 @@ then
  cd /usr/local/go/bin/pkg/mod/github.com/timescale/tsbs@v0.0.0-20220119183622-bcc00137d72d/
  sudo make
  echo "Generating data\r\n"
+ export PATH=$PATH:/usr/local/go/bin/pkg/mod/github.com/timescale/tsbs@v0.0.0-20220119183622-bcc00137d72d/bin/
+ # Databases
+ # cassandra clickhouse createdb influx mongo questdb siridb timescaledb victoriametrics
+ # databses=('cassandra', 'clickhouse', 'createdb', 'influx', 'mongo', 'questdb', 'siridb', 'timescaledb', 'victoriametrics') 
+ cd bin
+ mkdir /mydata/tmp/
+ ./tsbs_generate_data --use-case="iot" --seed=123 --scale=400 \
+    --timestamp-start="2016-01-01T00:00:00Z" \
+    --timestamp-end="2016-01-04T00:00:00Z" \
+    --log-interval="10s" --format="timescaledb" \
+    | gzip > /mydata/tmp/timescaledb-data.gz
+  echo "Generating Queries\r\n"
+  #last-loc-queries, avg-load-queries, high-load-queries, long-driving-session-queries
+  sudo chmod +x ../scripts/generate_queries.sh
+  FORMATS="timescaledb" SCALE=400 SEED=123 \
+    TS_START="2016-01-01T00:00:00Z" \
+    TS_END="2016-01-04T00:00:01Z" \
+    USE_CASE="iot" \
+    QUERIES=1000 QUERY_TYPES="last-loc avg-load high-load long-driving-sessions" \
+    BULK_DATA_DIR="/mydata/tmp/bulk_queries" ../scripts/generate_queries.sh
+  echo "Loading Data \r\n"
+  sudo chmod -R +x ../scripts/load/
+  sudo ./tsbs_load config --target=timescaledb --data-source=FILE
+  sudo sed -i 's/.\/file-from-tsbs-generate-data/\/mydata\/tmp\/timescaledb-data/g' config.yaml
+  sudo sed -i 's/pass: \"\"/pass: \"password\"/g' config.yaml   
+  sudo ./tsbs_load load timescaledb --config=./config.yaml
 
+  # Generate query scripts
+  mkdir /mydata/tmp/out/
+  cat /mydata/tmp/bulk_queries/timescaledb-avg-load-queries.gz | gunzip | tsbs_run_queries_timescaledb --workers=8 --max-queries=1000 --hosts="localhost" --pass="password" --user="postgres"| tee /mydata/tmp/out/query_timescaledb_timescaledb-avg-load-queries.out
+  cat /mydata/tmp/bulk_queries/timescaledb-last-loc-queries.gz | gunzip | tsbs_run_queries_timescaledb --workers=8 --max-queries=1000 --hosts="localhost" --pass="password" --user="postgres"| tee /mydata/tmp/out/query_timescaledb_timescaledb-last-loc-queries.out
+  cat /mydata/tmp/bulk_queries/timescaledb-high-load-queries.gz | gunzip | tsbs_run_queries_timescaledb --workers=8 --max-queries=1000 --hosts="localhost" --pass="password" --user="postgres"| tee /mydata/tmp/out/query_timescaledb_timescaledb-high-load-queries.out
+  cat /mydata/tmp/bulk_queries/timescaledb-long-driving-sessions-queries.gz | gunzip | tsbs_run_queries_timescaledb --workers=8 --max-queries=1000 --hosts="localhost" --pass="password" --user="postgres"| tee /mydata/tmp/out/query_timescaledb_timescaledb-long-driving-sessions-queries.out
+
+
+# tsbs_generate_queries --use-case="devops" --seed=123 --scale=4000 \
+#     --timestamp-start="2016-01-01T00:00:00Z" \
+#     --timestamp-end="2016-01-04T00:00:01Z" \
+#     --queries=1000 --query-type="breakdown-frequency" --format="timescaledb" \
+#     | gzip > /mydata/tmp/timescaledb-queries-breakdown-frequency.gz
 fi
 
 if $do_hadoop == 1;
