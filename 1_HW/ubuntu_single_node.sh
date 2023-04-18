@@ -125,6 +125,7 @@ then
   sudo ./tsbs_load config --target=timescaledb --data-source=FILE
   sudo sed -i 's/.\/file-from-tsbs-generate-data/\/mydata\/tmp\/timescaledb-data/g' config.yaml
   sudo sed -i 's/pass: \"\"/pass: \"password\"/g' config.yaml   
+  gunzip -d /mydata/tmp/timescaledb-data.gz
   sudo ./tsbs_load load timescaledb --config=./config.yaml
 
   # Generate query scripts
